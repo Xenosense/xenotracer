@@ -19,20 +19,23 @@ import CairoContractNode from "./nodes/cairoContractNode";
  *
  * 1. We take the text from the active window in vs code
  * 2. We split the text into lines
- * 3. We loop through each line
- * 4. We check the line and matches to our target entities. If it fits, we create a new node and push it to the stack.
- * 5. We also put it into our map of entities.
- * 6. We check if the line is a comment. If it is, we ignore it.
- * 7. For an entity that is in the current top of stack, process line till we find the end of the entity.
- * 8. We pop the top of the stack and set the current node to the top of the stack.
- * 9. Loop till the end of line.
+ * 3. We create a CairoContractNode object
+ * 4. We loop through the lines
+ * 5. We CHECK if the current line is the scope of new node that is checked in `createNodeIfEntity`. It means that each Node class 
+ *    Will run `isTextLineThisNode` method to check if the current line is the scope of the node. e.g.: FunctionNode need to have `function` or @decorator.
+ * 6. If yes, then we create a new node and push it to the stack. Process the line with the new node instead
+ * 7. If no, then we process the line with the current node (e.g.: Current Node is in function scope, so FunctionNode will process the line to do something
+ *    and adjust its object (e.g.: counting line number, etc and store it as a variable)
+ * 8. When we finish the loop, we pop the last node from the stack. We check if the last node is the same as the _mainContract. 
+ *    if yes, then no error is thrown.
+ * 
  *
  * Entities will be anything that what is related to our visualization
  * For example: function, namespace, if-else, with_attr, etc.
  *
  * NOTE that, we assume that each scope only have one entity.
  */
-class CairoParser {
+export class CairoParser {
   // Store entities that are important to us
   // They will be added as a children of a node, others won't be added
   // The others will still be run as a part of the node, but won't be added as a children of the node
@@ -55,17 +58,27 @@ class CairoParser {
   }
 
   /**
+   * Getter of Main Contract
+   * @returns the main contract
+   */
+  public getMainContract(): CairoContractNode | null {
+    return this._mainContract;
+  }
+
+  /**
    * Entry point of the parser.
    * Parses a contract OR file and make it into a tree of nodes.
    * It will be stored as private variable in the class.
    * @param code the text of the contract
    */
-  public parseAFile(code: string) {
+  public parseAFile(code: string, fileName: string): void {
     // First we split the code into lines
     const lines = code.split("\n");
 
     // Then, we initiate a Contract Node!
-    this._mainContract = new CairoContractNode("contract", 0, []);
+    // remove the '.cairo' from fileName if its there
+    const contractName = fileName.replace(".cairo", "");
+    this._mainContract = new CairoContractNode(contractName, 0, []);
 
     // Add it into the running stack
     this._runningStack.push(this._mainContract);
@@ -76,6 +89,13 @@ class CairoParser {
     // Loop through each line
     for (let i = 0; i < lines.length; i++) {
       this.parseLine(lines[i], i);
+    }
+
+    // Check if the _currentNode is the mainContract, if no, throw error
+    if (this._currentNode !== this._mainContract) {
+      throw new Error(
+        "Error: Parser: Current node is not the main contract! Something wrong with your file!"
+      );
     }
   }
 
@@ -124,10 +144,6 @@ class CairoParser {
    * @param lineNumber the line number the line is in
    */
   private parseLine(line: string, lineNumber: number) {
-    // Check if the line is a comment
-    if (line.startsWith("//")) {
-      return;
-    }
 
     // Check if the line is an entity
     const node = this.createNodeIfEntity(line, lineNumber);
