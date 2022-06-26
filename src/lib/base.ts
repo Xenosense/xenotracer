@@ -8,7 +8,8 @@ export abstract class BaseNode {
    * The name of the node
    */
   // Map of children of this node
-  public children: Map<string, BaseNode>;
+  // The format is {EntitiesType: {"node name": BaseNode}}
+  public children: Map<EntitiesType, Map<string, BaseNode>>;
 
   // End of line number.
   public endLine: number;
@@ -26,7 +27,7 @@ export abstract class BaseNode {
     public parents: BaseNode[],
     private entityType: EntitiesType | null = null
   ) {
-    this.children = new Map<string, BaseNode>();
+    this.children = new Map<EntitiesType, Map<string, BaseNode>>();
     this.endLine = 0;
   }
 
@@ -79,7 +80,16 @@ export abstract class BaseNode {
    */
 
   addChild(child: BaseNode): void {
-    this.children.set(child.name, child);
+    const childName = child.name;
+    const childEntityType = child.getEntityType()!;
+
+    // set it to our children
+    if (!this.children.has(childEntityType)) {
+      this.children.set(childEntityType, new Map<string, BaseNode>());
+    }
+
+    const children = this.children.get(childEntityType)!;
+    children.set(childName, child);
   }
 
   /**
