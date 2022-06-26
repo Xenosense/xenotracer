@@ -27,7 +27,7 @@ jobs:
           yarn
           yarn run compile && yarn run lint
       - run: ls -al
-        if runner.os == 'Linux'
+        if: runner.os == 'Linux'
       - name: test with yarn (LINUX ONLY)
         run: xvfb-run -a yarn test
         if: runner.os == 'Linux'
