@@ -41,8 +41,8 @@ export class CairoParser {
   // The others will still be run as a part of the node, but won't be added as a children of the node
   // THIS IS NOT GOOD, TO DO LATER: MOVE TO CONFIG FILE
   private importantEntitiesType: EntitiesType[] = [
-    EntitiesType.Function,
-    EntitiesType.NameSpace,
+    EntitiesType.function,
+    EntitiesType.nameSpace,
   ];
 
   // Main File Contract Node. Used for running the parser.

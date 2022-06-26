@@ -12,7 +12,7 @@ export default class CairoContractNode extends BaseNode {
    * @param parents parents node. If you need something to do with parents, you can use this.
    */
   constructor(name: string, startLine: number, parents: BaseNode[]) {
-    super(name, startLine, parents, EntitiesType.Contract);
+    super(name, startLine, parents, EntitiesType.contract);
   }
 
   /**
