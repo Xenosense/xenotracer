@@ -3,7 +3,7 @@
  */
 
 import * as assert from "assert";
-import CairoContractNode from "./../../lib/nodes/cairoContractNode";
+import CairoContractNode from "../../lib/nodes/cairoContractNode";
 
 // TODO: add test for CairoContractNode after import is completed!
 suite("Node Test Suite", () => {

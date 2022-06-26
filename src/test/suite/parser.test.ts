@@ -2,8 +2,6 @@
  * All parser test goes here
  */
 
-import * as assert from "assert";
-import CairoContractNode from "./../../lib/nodes/cairoContractNode";
 import { CairoParser } from "./../../lib/parser";
 import * as fs from 'fs';
 suite("Parser Test Suite", () => {
