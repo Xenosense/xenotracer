@@ -3,8 +3,6 @@
  */
 // @ts-nocheck
 
-import { BaseNode } from "./base";
-
 export enum EntitiesType {
   contract,
   function,

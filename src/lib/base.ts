@@ -40,6 +40,28 @@ export abstract class BaseNode {
   }
 
   /**
+   * A method that is used to change the key of child node.
+   * Useful for function that set the name with "" first. (e.g.: function name)
+   *
+   * @param entityType  the entity type of the child node
+   * @param oldKey the old name of the child node
+   * @param newKey the new name of the child node
+   * @param newObject the new child node
+   *
+   */
+  changeChildKey(
+    entityType: EntitiesType,
+    oldKey: string,
+    newKey: string,
+    newObject: BaseNode
+  ): void {
+    const children = this.children.get(entityType)!;
+
+    children.delete(oldKey);
+    children.set(newKey, newObject);
+  }
+
+  /**
    * Check if the line that is passed in points out to this node.
    * Override this method to check if the line is a text line that points to this node.
    *
