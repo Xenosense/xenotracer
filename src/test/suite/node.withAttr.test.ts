@@ -10,7 +10,7 @@ suite("withAttr Node Test Suite", () => {
   /**
    * Test if a line is detected as a withAttr node
    */
-  test("test-withAttr-node-detect-new-node-scope", () => {
+  test("test-withAttr-node-start", () => {
     // Initialize cairo node
     let cairoNode = new CairoContractNode("testing", 0, []);
 
