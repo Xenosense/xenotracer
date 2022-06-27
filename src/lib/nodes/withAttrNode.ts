@@ -70,7 +70,7 @@ export default class CairoWithAttrNode extends BaseNode {
     }
     // if not match, raise error
     throw new Error(
-      "Cannot create withAttr node, invalid text line on line" + lineNumber
+      "Cannot create withAttr node, invalid text line on line" + lineNumber.toString()
     );
   }
 }
