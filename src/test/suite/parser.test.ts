@@ -61,4 +61,3 @@
      assert(funcName === "increaseAllowance");
    });
  });
- 
