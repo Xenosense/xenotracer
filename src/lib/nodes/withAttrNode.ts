@@ -27,11 +27,8 @@ export default class CairoWithAttrNode extends BaseNode {
     textLine: string,
     currentRunningNodeStack: BaseNode[]
   ): boolean {
-    // Check if it is 'end' textLine
-    const regex = /^with_attr/;
-    const match = regex.exec(textLine.trim());
 
-    if (match) {
+    if (textLine.trim().startsWith("with_attr")) {
       return true;
     }
 
