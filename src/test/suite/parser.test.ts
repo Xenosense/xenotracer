@@ -49,6 +49,16 @@ suite("Parser Test Suite", () => {
         ERC20.increase_allowance(spender, added_value)
         return (TRUE)
     end
+
+    @external
+    func wtf{
+            syscall_ptr : felt*,
+            pedersen_ptr : HashBuiltin*,
+            range_check_ptr
+        }(spender: felt, added_value: Uint256) -> (success: felt):
+        ERC20.increase_allowance(spender, added_value)
+        return (TRUE)
+    end
     `;
     const test = EntitiesType;
     parser.parseAFile(text, "ERC20.cairo");
