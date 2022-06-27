@@ -6,12 +6,11 @@ import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
 import CairoWithAttrNode from "../../lib/nodes/withAttrNode";
 
-// TODO: add test for CairoContractNode after import is completed!
-suite("with_attr Node Test Suite", () => {
+suite("withAttr Node Test Suite", () => {
   /**
-   * Test if a line is detected as a function node
+   * Test if a line is detected as a withAttr node
    */
-  test("test-function-node-detect-new-node-scope", () => {
+  test("test-withAttr-node-detect-new-node-scope", () => {
     // Initialize cairo node
     let cairoNode = new CairoContractNode("testing", 0, []);
 
@@ -59,11 +58,11 @@ suite("with_attr Node Test Suite", () => {
   /**
    * Test if a node process well and has ended the node
    */
-  test("test-function-node-end", () => {
+  test("test-withAttr-node-end", () => {
     // Initialize cairo node
     let cairoNode = new CairoContractNode("testing", 0, []);
 
-    // Return true if the line is a function (starts with decorator)
+    // Return true if the line is a withAttr (starts with decorator)
     const withAttrNode = CairoWithAttrNode.createNode(
       '      with_attr error("ERC20: added_value is not a valid Uint256"):',
       0,
