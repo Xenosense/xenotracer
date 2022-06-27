@@ -16,35 +16,44 @@ suite("with_attr Node Test Suite", () => {
     let cairoNode = new CairoContractNode("testing", 0, []);
 
     // accept case
-    const isInExampleOne = CairoWithAttrNode.isTextLineThisNode('      with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
-    assert.equal(isInExampleOne, true, "fails to detect with_attr with space before");
+    const isInExampleOne = CairoWithAttrNode.isTextLineThisNode(
+      '      with_attr error("ERC20: added_value is not a valid Uint256"):',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleOne,
+      true,
+      "fails to detect with_attr with space before"
+    );
 
     // reject cases
-    const isInExampleTwo = CairoWithAttrNode.isTextLineThisNode('with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
-    assert.equal(isInExampleTwo, true, "fails to detect withAttr without space");
+    const isInExampleTwo = CairoWithAttrNode.isTextLineThisNode(
+      'with_attr error("ERC20: added_value is not a valid Uint256"):',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleTwo,
+      true,
+      "fails to detect withAttr without space"
+    );
 
-    const isNotInExampleThree = CairoWithAttrNode.isTextLineThisNode('# with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
+    const isNotInExampleThree = CairoWithAttrNode.isTextLineThisNode(
+      '# with_attr error("ERC20: added_value is not a valid Uint256"):',
+      [cairoNode]
+    );
     assert.equal(isNotInExampleThree, false, "fails to reject comment");
 
-    const isNotInExampleFour = CairoWithAttrNode.isTextLineThisNode("    func xxx(", [
-      cairoNode
-    ]);
-    assert.equal(
-      isNotInExampleFour,
-      false,
-      "fails to reject func node"
+    const isNotInExampleFour = CairoWithAttrNode.isTextLineThisNode(
+      "    func xxx(",
+      [cairoNode]
     );
+    assert.equal(isNotInExampleFour, false, "fails to reject func node");
 
-    const isNotInExampleFive = CairoWithAttrNode.isTextLineThisNode("    namespace cat:", [
-      cairoNode
-    ]);
-    assert.equal(
-      isNotInExampleFive,
-      false,
-      "fails to reject namespace node"
+    const isNotInExampleFive = CairoWithAttrNode.isTextLineThisNode(
+      "    namespace cat:",
+      [cairoNode]
     );
-
-
+    assert.equal(isNotInExampleFive, false, "fails to reject namespace node");
   });
 
   /**
@@ -55,15 +64,20 @@ suite("with_attr Node Test Suite", () => {
     let cairoNode = new CairoContractNode("testing", 0, []);
 
     // Return true if the line is a function (starts with decorator)
-    const withAttrNode = CairoWithAttrNode.createNode('      with_attr error("ERC20: added_value is not a valid Uint256"):', 0, [
-      cairoNode,
-    ]);
+    const withAttrNode = CairoWithAttrNode.createNode(
+      '      with_attr error("ERC20: added_value is not a valid Uint256"):',
+      0,
+      [cairoNode]
+    );
 
     // Don't forget to add child to cairo node
     cairoNode.addChild(withAttrNode);
     withAttrNode.processLine("let (new_allowance: Uint256) = ", 1);
     withAttrNode.processLine("   }", 2);
-    withAttrNode.processLine("SafeUint256.add(current_allowance, added_value)", 3);
+    withAttrNode.processLine(
+      "SafeUint256.add(current_allowance, added_value)",
+      3
+    );
     const isOver = withAttrNode.processLine("end", 4);
 
     // Check if name is 'withAttr'

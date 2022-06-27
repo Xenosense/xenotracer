@@ -30,10 +30,10 @@ export default class CairoWithAttrNode extends BaseNode {
     // Check if it is 'end' textLine
     const regex = /^with_attr/;
     const match = regex.exec(textLine.trim());
-  
+
     if (match) {
       return true;
-    };
+    }
 
     return false;
   }
