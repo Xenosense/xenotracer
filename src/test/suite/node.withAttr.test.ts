@@ -77,29 +77,4 @@ suite("with_attr Node Test Suite", () => {
     // and check if isOver is TRUE
     assert.equal(isOver, true);
   });
-
-  // /**
-  //  * Test if a namespace node process well and has ended the node
-  //  */
-  // test("test-namespace-node-everything", () => {
-  //   // Initialize cairo node
-  //   let cairoNode = new CairoContractNode("testing", 0, []);
-
-  //   // Return true. it is the stars of namespace node.
-  //   const isIn = CairoNamespaceNode.isTextLineThisNode("namespace ERC20", [
-  //     cairoNode,
-  //   ]);
-  //   assert.equal(isIn, true);
-
-  //   const nameSpaceNode = CairoNamespaceNode.createNode("namespace ERC20", 0, [
-  //     cairoNode,
-  //   ]);
-  //   const isEnded = nameSpaceNode.processLine("end", 1);
-
-  //   // Check if name is 'ERC20'
-  //   assert.equal(nameSpaceNode.name, "ERC20");
-
-  //   // check if ended
-  //   assert.equal(isEnded, true);
-  // });
 });
