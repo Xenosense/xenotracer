@@ -7,6 +7,8 @@
 import { BaseNode } from "./base";
 import { EntitiesType } from "./enumCollectionsAndUtils";
 import CairoContractNode from "./nodes/cairoContractNode";
+import CairoFunctionNode from "./nodes/functionNode";
+import CairoNamespaceNode from "./nodes/namespaceNode";
 
 /**
  * Parser class.
@@ -126,6 +128,20 @@ export class CairoParser {
 
     if (CairoContractNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoContractNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    }
+    else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
+      chosenNode = CairoNamespaceNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    }
+    else if (CairoFunctionNode.isTextLineThisNode(line, runningStackClone)) {
+      chosenNode = CairoFunctionNode.createNode(
         line,
         lineNumber,
         runningStackClone
