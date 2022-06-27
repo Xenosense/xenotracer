@@ -81,7 +81,7 @@ suite("with_attr Node Test Suite", () => {
     const isOver = withAttrNode.processLine("end", 4);
 
     // Check if name is 'withAttr'
-    assert.equal(withAttrNode.name, "withAttr");
+    assert.equal(withAttrNode.name, "with_attr0");
 
     // and check if isOver is TRUE
     assert.equal(isOver, true);
