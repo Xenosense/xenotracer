@@ -60,9 +60,8 @@ suite("conditional Node Test Suite", () => {
    * Test if a node process well and has ended the node
    */
   test("test-conditional-node-end", () => {
-    // Initialize cairo node
 
-    // Return true if the line is a conditional (starts with decorator)
+    // Return true if the line is a conditional (starts with if)
     const conditionalNode = CairoConditionalNode.createNode(
       "      if is_infinite == FALSE:",
       0,
@@ -90,7 +89,7 @@ suite("conditional Node Test Suite", () => {
     const conditionalNodeIsOver = conditionalNode.processLine("end", 6);
     conditionalNode.processLine("return ()", 7);
 
-    
+
     assert.equal(conditionalNode.name, "conditional0");
     assert.equal(
       conditionalNodeIsOver,
