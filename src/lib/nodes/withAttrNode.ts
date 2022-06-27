@@ -27,7 +27,6 @@ export default class CairoWithAttrNode extends BaseNode {
     textLine: string,
     currentRunningNodeStack: BaseNode[]
   ): boolean {
-
     if (textLine.trim().startsWith("with_attr")) {
       return true;
     }
@@ -66,9 +65,7 @@ export default class CairoWithAttrNode extends BaseNode {
     lineNumber: number,
     parents: BaseNode[]
   ): BaseNode {
-    const regex = /with_attr/;
-    const match = regex.exec(textLine);
-    if (match) {
+    if (this.isTextLineThisNode(textLine, parents)) {
       return new CairoWithAttrNode("withAttr", lineNumber, parents);
     }
     // if not match, raise error
