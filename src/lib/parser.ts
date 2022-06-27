@@ -9,6 +9,7 @@ import { EntitiesType } from "./enumCollectionsAndUtils";
 import CairoContractNode from "./nodes/cairoContractNode";
 import CairoFunctionNode from "./nodes/functionNode";
 import CairoNamespaceNode from "./nodes/namespaceNode";
+import CairoWithAttrNode from "./nodes/withAttrNode";
 
 /**
  * Parser class.
@@ -23,14 +24,14 @@ import CairoNamespaceNode from "./nodes/namespaceNode";
  * 2. We split the text into lines
  * 3. We create a CairoContractNode object
  * 4. We loop through the lines
- * 5. We CHECK if the current line is the scope of new node that is checked in `createNodeIfEntity`. It means that each Node class 
+ * 5. We CHECK if the current line is the scope of new node that is checked in `createNodeIfEntity`. It means that each Node class
  *    Will run `isTextLineThisNode` method to check if the current line is the scope of the node. e.g.: FunctionNode need to have `function` or @decorator.
  * 6. If yes, then we create a new node and push it to the stack. Process the line with the new node instead
  * 7. If no, then we process the line with the current node (e.g.: Current Node is in function scope, so FunctionNode will process the line to do something
  *    and adjust its object (e.g.: counting line number, etc and store it as a variable)
- * 8. When we finish the loop, we pop the last node from the stack. We check if the last node is the same as the _mainContract. 
+ * 8. When we finish the loop, we pop the last node from the stack. We check if the last node is the same as the _mainContract.
  *    if yes, then no error is thrown.
- * 
+ *
  *
  * Entities will be anything that what is related to our visualization
  * For example: function, namespace, if-else, with_attr, etc.
@@ -45,6 +46,7 @@ export class CairoParser {
   private importantEntitiesType: EntitiesType[] = [
     EntitiesType.function,
     EntitiesType.nameSpace,
+    EntitiesType.scopingWithAttr,
   ];
 
   // Main File Contract Node. Used for running the parser.
@@ -132,16 +134,20 @@ export class CairoParser {
         lineNumber,
         runningStackClone
       );
-    }
-    else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoNamespaceNode.createNode(
         line,
         lineNumber,
         runningStackClone
       );
-    }
-    else if (CairoFunctionNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (CairoFunctionNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoFunctionNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    } else if (CairoWithAttrNode.isTextLineThisNode(line, runningStackClone)) {
+      chosenNode = CairoWithAttrNode.createNode(
         line,
         lineNumber,
         runningStackClone
@@ -160,7 +166,6 @@ export class CairoParser {
    * @param lineNumber the line number the line is in
    */
   private parseLine(line: string, lineNumber: number) {
-
     // Check if the line is an entity
     const node = this.createNodeIfEntity(line, lineNumber);
 
