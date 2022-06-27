@@ -4,8 +4,6 @@
 
 import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
-import CairoFunctionNode from "../../lib/nodes/functionNode";
-import CairoNamespaceNode from "../../lib/nodes/namespaceNode";
 import CairoWithAttrNode from "../../lib/nodes/withAttrNode";
 
 // TODO: add test for CairoContractNode after import is completed!
@@ -16,22 +14,20 @@ suite("with_attr Node Test Suite", () => {
   test("test-function-node-detect-new-node-scope", () => {
     // Initialize cairo node
     let cairoNode = new CairoContractNode("testing", 0, []);
-    let functionNode = new CairoFunctionNode("node", 0, [cairoNode]);
 
     // accept case
-    const isInExampleOne = CairoWithAttrNode.isTextLineThisNode('      with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode, functionNode]);
+    const isInExampleOne = CairoWithAttrNode.isTextLineThisNode('      with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
     assert.equal(isInExampleOne, true, "fails to detect with_attr with space before");
 
     // reject cases
-    const isInExampleTwo = CairoWithAttrNode.isTextLineThisNode('with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode, functionNode]);
+    const isInExampleTwo = CairoWithAttrNode.isTextLineThisNode('with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
     assert.equal(isInExampleTwo, true, "fails to detect withAttr without space");
 
-    const isNotInExampleThree = CairoWithAttrNode.isTextLineThisNode('# with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode, functionNode]);
+    const isNotInExampleThree = CairoWithAttrNode.isTextLineThisNode('# with_attr error("ERC20: added_value is not a valid Uint256"):', [cairoNode]);
     assert.equal(isNotInExampleThree, false, "fails to reject comment");
 
-    const isNotInExampleFour = CairoFunctionNode.isTextLineThisNode("    func xxx(", [
-      cairoNode,
-      functionNode
+    const isNotInExampleFour = CairoWithAttrNode.isTextLineThisNode("    func xxx(", [
+      cairoNode
     ]);
     assert.equal(
       isNotInExampleFour,
@@ -39,9 +35,8 @@ suite("with_attr Node Test Suite", () => {
       "fails to reject func node"
     );
 
-    const isNotInExampleFive = CairoFunctionNode.isTextLineThisNode("    namespace cat:", [
-      cairoNode,
-      functionNode
+    const isNotInExampleFive = CairoWithAttrNode.isTextLineThisNode("    namespace cat:", [
+      cairoNode
     ]);
     assert.equal(
       isNotInExampleFive,

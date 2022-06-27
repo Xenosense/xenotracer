@@ -6,7 +6,7 @@ import { EntitiesType } from "../enumCollectionsAndUtils";
 
 export default class CairoWithAttrNode extends BaseNode {
   /**
-   * Creates an instance of namespace node.
+   * Creates an instance of with_attr node.
    * @param name name of the node
    * @param startLine start line of the node
    * @param parents parents node. If you need something to do with parents, you can use this.
@@ -16,8 +16,8 @@ export default class CairoWithAttrNode extends BaseNode {
   }
 
   /**
-   * This function will check if the line is a namespace.
-   * Just check the `namespace` keyword in it
+   * This function will check if the line is a with_attr.
+   * Just check the `with_attr` keyword in it
    * @param textLine text line !
    * @param currentRunningNodeStack current running node stack (parents)
    *
@@ -55,14 +55,14 @@ export default class CairoWithAttrNode extends BaseNode {
 
   /**
    *
-   * Parse namespace name from the text lline
-   * for example, namespace xxx, parse the `xxx`.
+   * Parse with_attr name from the text line
+   * for example, with_attr xxx, parse the `with_attr`.
    *
    * @param textLine should be empty string.
    * @param lineNumber should be 0
    * @param parents
    *
-   * @returns a new CairoContractNode
+   * @returns a new CairoWithAttrNode
    */
   static createNode(
     textLine: string,
