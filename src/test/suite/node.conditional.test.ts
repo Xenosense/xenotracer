@@ -5,6 +5,7 @@
 import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
 import CairoConditionalNode from "../../lib/nodes/conditionalNode";
+import CairoWithAttrNode from "../../lib/nodes/withAttrNode";
 
 suite("conditional Node Test Suite", () => {
   /**
@@ -16,7 +17,7 @@ suite("conditional Node Test Suite", () => {
 
     // accept case
     const isInExampleOne = CairoConditionalNode.isTextLineThisNode(
-      'if is_infinite == FALSE:',
+      "if is_infinite == FALSE:",
       [cairoNode]
     );
     assert.equal(
@@ -25,9 +26,8 @@ suite("conditional Node Test Suite", () => {
       "fails to detect conditional without space in front"
     );
 
-    
     const isInExampleTwo = CairoConditionalNode.isTextLineThisNode(
-      '     if is_infinite == FALSE:',
+      "     if is_infinite == FALSE:",
       [cairoNode]
     );
     assert.equal(
@@ -35,10 +35,10 @@ suite("conditional Node Test Suite", () => {
       true,
       "fails to detect conditional with space in front"
     );
-    
+
     // reject cases
     const isNotInExampleThree = CairoConditionalNode.isTextLineThisNode(
-      '# if is_infinite == FALSE:',
+      "# if is_infinite == FALSE:",
       [cairoNode]
     );
     assert.equal(isNotInExampleThree, false, "fails to reject comment");
@@ -59,31 +59,43 @@ suite("conditional Node Test Suite", () => {
   /**
    * Test if a node process well and has ended the node
    */
-  // test("test-conditional-node-end", () => {
-  //   // Initialize cairo node
-  //   let cairoNode = new CairoContractNode("testing", 0, []);
+  test("test-conditional-node-end", () => {
+    // Initialize cairo node
 
-  //   // Return true if the line is a conditional (starts with decorator)
-  //   const conditionalNode = CairoConditionalNode.createNode(
-  //     '      with_attr error("ERC20: added_value is not a valid Uint256"):',
-  //     0,
-  //     [cairoNode]
-  //   );
+    // Return true if the line is a conditional (starts with decorator)
+    const conditionalNode = CairoConditionalNode.createNode(
+      "      if is_infinite == FALSE:",
+      0,
+      []
+    );
 
-  //   // Don't forget to add child to cairo node
-  //   cairoNode.addChild(conditionalNode);
-  //   conditionalNode.processLine("let (new_allowance: Uint256) = ", 1);
-  //   conditionalNode.processLine("   }", 2);
-  //   conditionalNode.processLine(
-  //     "SafeUint256.add(current_allowance, added_value)",
-  //     3
-  //   );
-  //   const isOver = conditionalNode.processLine("end", 4);
+    const withAttrNode = CairoWithAttrNode.createNode(
+      '   with_attr error_message("ERC20: insufficient allowance"):',
+      1,
+      [conditionalNode]
+    );
 
-  //   // Check if name is 'conditional'
-  //   assert.equal(conditionalNode.name, "with_attr0");
+    // Don't forget to add child to withAttr node
+    conditionalNode.addChild(withAttrNode);
+    withAttrNode.processLine(
+      "   let (new_allowance: Uint256) = SafeUint256.sub_le(current_allowance, amount)",
+      2
+    );
+    const withAttrIsOver = withAttrNode.processLine("    end", 3);
+    assert.equal(withAttrIsOver, true, "fails to end with_attr node");
 
-  //   // and check if isOver is TRUE
-  //   assert.equal(isOver, true);
-  // });
+    conditionalNode.processLine("  _approve(owner, spender, new_allowance)", 4);
+    conditionalNode.processLine("  return ()", 5);
+
+    const conditionalNodeIsOver = conditionalNode.processLine("end", 6);
+    conditionalNode.processLine("return ()", 7);
+
+    
+    assert.equal(conditionalNode.name, "conditional0");
+    assert.equal(
+      conditionalNodeIsOver,
+      true,
+      "fails to detect end of conditional"
+    );
+  });
 });
