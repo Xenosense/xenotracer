@@ -55,30 +55,28 @@ suite("with_attr Node Test Suite", () => {
   /**
    * Test if a node process well and has ended the node
    */
-  // test("test-function-node-end", () => {
-  //   // Initialize cairo node
-  //   let cairoNode = new CairoContractNode("testing", 0, []);
+  test("test-function-node-end", () => {
+    // Initialize cairo node
+    let cairoNode = new CairoContractNode("testing", 0, []);
 
-  //   // Return true if the line is a function (starts with decorator)
-  //   const funcNode = CairoFunctionNode.createNode("@constructor", 0, [
-  //     cairoNode,
-  //   ]);
+    // Return true if the line is a function (starts with decorator)
+    const withAttrNode = CairoWithAttrNode.createNode('      with_attr error("ERC20: added_value is not a valid Uint256"):', 0, [
+      cairoNode,
+    ]);
 
-  //   // Don't forget to add child to cairo node
-  //   cairoNode.addChild(funcNode);
-  //   funcNode.processLine("func xxx{", 1);
-  //   funcNode.processLine("   }", 2);
-  //   funcNode.processLine("   (a: felt, b: felt) -> (success: felt):", 3);
-  //   funcNode.processLine("   ERC20.meong()", 4);
-  //   funcNode.processLine("   return (TRUE)", 5);
-  //   const isOver = funcNode.processLine("end", 6);
+    // Don't forget to add child to cairo node
+    cairoNode.addChild(withAttrNode);
+    withAttrNode.processLine("let (new_allowance: Uint256) = ", 1);
+    withAttrNode.processLine("   }", 2);
+    withAttrNode.processLine("SafeUint256.add(current_allowance, added_value)", 3);
+    const isOver = withAttrNode.processLine("end", 4);
 
-  //   // Check if name is 'xxx'
-  //   assert.equal(funcNode.name, "xxx");
+    // Check if name is 'withAttr'
+    assert.equal(withAttrNode.name, "withAttr");
 
-  //   // and check if isOver is TRUE
-  //   assert.equal(isOver, true);
-  // });
+    // and check if isOver is TRUE
+    assert.equal(isOver, true);
+  });
 
   // /**
   //  * Test if a namespace node process well and has ended the node
