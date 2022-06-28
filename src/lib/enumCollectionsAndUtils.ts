@@ -9,4 +9,5 @@ export enum EntitiesType {
   nameSpace,
   conditionalStatement,
   scopingWithAttr,
+  comment,
 }

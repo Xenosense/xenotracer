@@ -11,6 +11,7 @@ import CairoFunctionNode from "./nodes/functionNode";
 import CairoNamespaceNode from "./nodes/namespaceNode";
 import CairoWithAttrNode from "./nodes/withAttrNode";
 import CairoConditionalNode from "./nodes/conditionalNode";
+import CairoCommentNode from "./nodes/commentNode";
 
 /**
  * Parser class.
@@ -130,7 +131,13 @@ export class CairoParser {
     // Useful for traversing later (you don't wanna make the parent node as a reference variable)
     const runningStackClone = this._runningStack.slice();
 
-    if (CairoContractNode.isTextLineThisNode(line, runningStackClone)) {
+    if (CairoCommentNode.isTextLineThisNode(line, runningStackClone)) {
+      chosenNode = CairoCommentNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    } else if (CairoContractNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoContractNode.createNode(
         line,
         lineNumber,
@@ -154,14 +161,15 @@ export class CairoParser {
         lineNumber,
         runningStackClone
       );
-    } else if (CairoConditionalNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (
+      CairoConditionalNode.isTextLineThisNode(line, runningStackClone)
+    ) {
       chosenNode = CairoConditionalNode.createNode(
         line,
         lineNumber,
         runningStackClone
       );
     }
-
 
     // continue else if till the end of the list of entities
 
