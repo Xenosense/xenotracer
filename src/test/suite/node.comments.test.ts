@@ -61,15 +61,20 @@ suite("Comment Node Test Suite", () => {
     // Initialize cairo node
     let cairoNode = new CairoContractNode("testing", 0, []);
 
-    // Return true if the line is a withAttr (starts with decorator)
+    // Return true if the line is a Comment (starts with #)
     const commentNode = CairoCommentNode.createNode("# namespace cat:", 0, [
       cairoNode,
     ]);
 
-    const processedComments1 = commentNode.processLine("# namespace cat: ", 1);
+    const processedComments2 = commentNode.processLine("# namespace cat: ", 1);
 
+
+    const processedComments1 = commentNode.processLine("# func constructor{ ", 2);
+    const processedComments3 = commentNode.processLine("# awawaawa", 3);
     // We check whether comment is ended
     // Since comments will be thrown away, we just check if the node is ended
     assert.equal(processedComments1, true);
+    assert.equal(processedComments2, true);
+    assert.equal(processedComments3, true);
   });
 });

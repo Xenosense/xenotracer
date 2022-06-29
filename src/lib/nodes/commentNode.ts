@@ -45,14 +45,14 @@ export default class CairoCommentNode extends BaseNode {
   }
 
   /**
-   * Create node for CairoContractNode
+   * Create node for Comment Node
    * This static method won't be used! You need to use the main constructor instead
    *
    * @param textLine should be empty string.
    * @param lineNumber should be 0
    * @param parents
    *
-   * @returns a new CairoContractNode
+   * @returns a new Comment Node
    */
   static createNode(
     textLine: string,
