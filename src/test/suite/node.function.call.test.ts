@@ -114,7 +114,7 @@ suite("function-call Node Test Suite", () => {
 
     const isOver = functionCallNode.processLine("      ERC20.initializer(name, symbol, decimals):", 0);
     // Check if name is '{namespace-methodName-lineNumber}'
-    assert.equal(functionCallNode.name, "erc20-initializer-0", "fails to set name");
+    assert.equal(functionCallNode.name, "ERC20-initializer-0", "fails to set name");
 
     // and check if isOver is TRUE
     assert.equal(isOver, true);
@@ -127,7 +127,7 @@ suite("function-call Node Test Suite", () => {
 
     // Check if name is '{namespace-methodName-lineNumber}'
     const isOver2 = functionCallNode2.processLine("      ERC20._mint(recipient, initial_supply)", 0);
-    assert.equal(functionCallNode2.name, "erc20-_mint-0", "fails to set name");
+    assert.equal(functionCallNode2.name, "ERC20-_mint-0", "fails to set name");
 
     assert.equal(isOver2, true)
     
