@@ -65,6 +65,16 @@ suite("function-call Node Test Suite", () => {
       false,
       "fails to detect function-call with space before"
     );
+
+    const isInExampleSix = CairoFunctionCallNode.isTextLineThisNode(
+      'from starkware.cairo.common.cairo_builtins import HashBuiltin',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleSix,
+      false,
+      "fails to detect function-call with space before"
+    );
    
   });
 
