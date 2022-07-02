@@ -4,7 +4,7 @@
 
 import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
-import CairoWithAttrNode from "../../lib/nodes/functionCallNode";
+import CairoFunctionCallNode from "../../lib/nodes/functionCallNode";
 
 suite("function-call Node Test Suite", () => {
   /**
@@ -15,7 +15,7 @@ suite("function-call Node Test Suite", () => {
     let cairoNode = new CairoContractNode("testing", 0, []);
 
     // accept case
-    const isInExampleOne = CairoWithAttrNode.isTextLineThisNode(
+    const isInExampleOne = CairoFunctionCallNode.isTextLineThisNode(
       'ERC20.initializer(name, symbol, decimals)',
       [cairoNode]
     );
@@ -25,7 +25,7 @@ suite("function-call Node Test Suite", () => {
       "fails to detect function-call with space before"
     );
 
-    const isInExampleTwo = CairoWithAttrNode.isTextLineThisNode(
+    const isInExampleTwo = CairoFunctionCallNode.isTextLineThisNode(
       'ERC20._mint(recipient, initial_supply)',
       [cairoNode]
     );
@@ -35,24 +35,26 @@ suite("function-call Node Test Suite", () => {
       "fails to detect function-call with space before"
     );
 
-
-    const isNotInExampleThree = CairoWithAttrNode.isTextLineThisNode(
-      '# function-call error("ERC20: added_value is not a valid Uint256"):',
+    const isInExampleThree = CairoFunctionCallNode.isTextLineThisNode(
+      'let (name) = ERC20.name()',
       [cairoNode]
     );
-    assert.equal(isNotInExampleThree, false, "fails to reject comment");
+    assert.equal(
+      isInExampleThree,
+      true,
+      "fails to detect function-call with space before"
+    );
 
-    const isNotInExampleFour = CairoWithAttrNode.isTextLineThisNode(
-      "    func xxx(",
+    const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+      'let (totalSupply: Uint256) = ERC20.total_supply()',
       [cairoNode]
     );
-    assert.equal(isNotInExampleFour, false, "fails to reject func node");
-
-    const isNotInExampleFive = CairoWithAttrNode.isTextLineThisNode(
-      "    namespace cat:",
-      [cairoNode]
+    assert.equal(
+      isInExampleFour,
+      true,
+      "fails to detect function-call with space before"
     );
-    assert.equal(isNotInExampleFive, false, "fails to reject namespace node");
+   
   });
 
   /**
@@ -63,7 +65,7 @@ suite("function-call Node Test Suite", () => {
     let cairoNode = new CairoContractNode("testing", 0, []);
 
     // Return true if the line is a function-call (starts with decorator)
-    const functionCallNode = CairoWithAttrNode.createNode(
+    const functionCallNode = CairoFunctionCallNode.createNode(
       '      function-call error("ERC20: added_value is not a valid Uint256"):',
       0,
       [cairoNode]
