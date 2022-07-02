@@ -2,6 +2,8 @@
  * A collections of Node
  */
 import { BaseNode } from "../base";
+import { EntitiesType } from "../enumCollectionsAndUtils";
+
 
 export default class CairoFunctionCallNode extends BaseNode {
   /**
@@ -11,7 +13,7 @@ export default class CairoFunctionCallNode extends BaseNode {
    * @param parents parents node. If you need something to do with parents, you can use this.
    */
   constructor(name: string, startLine: number, parents: BaseNode[]) {
-    super(name, startLine, parents);
+    super(name, startLine, parents, EntitiesType.functionCall);
   }
 
   /**
