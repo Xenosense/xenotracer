@@ -5,8 +5,10 @@
 import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
 import CairoImportNode from "../../lib/nodes/importNode";
+import {EntitiesType} from "../../lib/enumCollectionsAndUtils";
 
-suite("Import  Node Test Suite", () => {
+
+suite("Import Node Test Suite", () => {
   /**
    * Test if a line is detected as a withAttr node
    */
@@ -82,15 +84,18 @@ suite("Import  Node Test Suite", () => {
       [cairoNode]
     );
 
+    // cast to importNode
+    const importNodeCast = importNode as CairoImportNode;
+
     assert.equal(importNode.name, "import-3", "name should be import-3");
 
     // importNode with have map of import
     // It will have key of the name of the import (either alias or not)
     // and value of the import that contains dictionary of 'importName' and 'importPath'
-    assert.equal(importNode.imports.size, 1, "should have one import");
-    assert.equal(importNode.imports.get("ERC20").importName, "ERC20");
+    assert.equal(importNodeCast.imports.size, 1, "should have one import");
+    assert.equal(importNodeCast.imports.get("ERC20")!.get("importName"), "ERC20");
     assert.equal(
-      importNode.imports.get("ERC20").importPath,
+      importNodeCast.imports.get("ERC20")!.get("importPath"),
       "openzeppelin.token.erc20.library"
     );
 
@@ -101,13 +106,46 @@ suite("Import  Node Test Suite", () => {
       0,
       [cairoNode]
     );
+      
+    // cast to importNode
+    const importNodeCast2 = importNode2 as CairoImportNode;
 
-    // The name should be the same as the name after 'as' in below case
-    // Below name is meow, but the importName is cat
+    // assert size is one
+    assert.equal(importNodeCast2.imports.size, 1, "should have one import");
+
+    // assert the name of the import is cat
+    // The key to access the imports is `meow`
+    assert.equal(importNodeCast2.imports.get("meow")!.get("importName"), "cat");
+
+    // assert the path of the import is a.b
+    assert.equal(importNodeCast2.imports.get("meow")!.get("importPath"), "a.b");
+
+    // assert multiple import
     const importNode3 = CairoImportNode.createNode(
       "from a.b import cat as meow, mbeow, guk",
       0,
       [cairoNode]
     );
+
+    // cast to importNode
+    const importNodeCast3 = importNode3 as CairoImportNode;
+    
+    // assert size is three
+    assert.equal(importNodeCast3.imports.size, 3, "should have three import");
+
+    // Assert if the 'meow', 'mbeow', and 'guk' key is in the map
+    assert.equal(importNodeCast3.imports.has("meow"), true, "should have meow");
+    assert.equal(importNodeCast3.imports.has("mbeow"), true, "should have mbeow");
+    assert.equal(importNodeCast3.imports.has("guk"), true, "should have guk");
+
+    // Assert if the meow importName is 'cat'
+    assert.equal(importNodeCast3.imports.get("meow")!.get("importName"), "cat");
+
+    // assert the path of 'meow', 'mbeow', and 'guk' is a.b
+    
+    assert.equal(importNodeCast3.imports.get("meow")!.get("importPath"), "a.b");
+    assert.equal(importNodeCast3.imports.get("mbeow")!.get("importPath"), "a.b");
+    assert.equal(importNodeCast3.imports.get("guk")!.get("importPath"), "a.b");
+
   });
 });

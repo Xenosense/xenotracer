@@ -10,4 +10,5 @@ export enum EntitiesType {
   conditionalStatement,
   scopingWithAttr,
   comment,
+  import,
 }
