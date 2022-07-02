@@ -54,6 +54,17 @@ suite("function-call Node Test Suite", () => {
       true,
       "fails to detect function-call with space before"
     );
+
+    // reject case
+    const isInExampleFive = CairoFunctionCallNode.isTextLineThisNode(
+      '%lang starknet',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleFive,
+      false,
+      "fails to detect function-call with space before"
+    );
    
   });
 
