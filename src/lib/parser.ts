@@ -12,6 +12,7 @@ import CairoNamespaceNode from "./nodes/namespaceNode";
 import CairoWithAttrNode from "./nodes/withAttrNode";
 import CairoConditionalNode from "./nodes/conditionalNode";
 import CairoCommentNode from "./nodes/commentNode";
+import CairoFunctionCallNode from "./nodes/functionCallNode";
 
 /**
  * Parser class.
@@ -165,6 +166,14 @@ export class CairoParser {
       CairoConditionalNode.isTextLineThisNode(line, runningStackClone)
     ) {
       chosenNode = CairoConditionalNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    } else if (
+      CairoFunctionCallNode.isTextLineThisNode(line, runningStackClone)
+    ) {
+      chosenNode = CairoFunctionCallNode.createNode(
         line,
         lineNumber,
         runningStackClone
