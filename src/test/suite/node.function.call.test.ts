@@ -75,6 +75,26 @@ suite("function-call Node Test Suite", () => {
       false,
       "fails to detect function-call with space before"
     );
+
+    const isInExampleSeven = CairoFunctionCallNode.isTextLineThisNode(
+      'return (remaining)',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleSeven,
+      false,
+      "fails to detect function-call with space before"
+    );
+
+    const isInExampleEight = CairoFunctionCallNode.isTextLineThisNode(
+      '}(spender: felt, amount: Uint256) -> (success: felt):',
+      [cairoNode]
+    );
+    assert.equal(
+      isInExampleEight,
+      false,
+      "fails to detect function-call with space before"
+    );
    
   });
 
@@ -87,25 +107,32 @@ suite("function-call Node Test Suite", () => {
 
     // Return true if the line is a function-call (starts with decorator)
     const functionCallNode = CairoFunctionCallNode.createNode(
-      '      function-call error("ERC20: added_value is not a valid Uint256"):',
+      '      ERC20.initializer(name, symbol, decimals):',
       0,
       [cairoNode]
     );
 
-    // Don't forget to add child to cairo node
-    cairoNode.addChild(functionCallNode);
-    functionCallNode.processLine("let (new_allowance: Uint256) = ", 1);
-    functionCallNode.processLine("   }", 2);
-    functionCallNode.processLine(
-      "SafeUint256.add(current_allowance, added_value)",
-      3
-    );
-    const isOver = functionCallNode.processLine("end", 4);
-
-    // Check if name is 'function-call'
-    assert.equal(functionCallNode.name, "with_attr0");
+    const isOver = functionCallNode.processLine("      ERC20.initializer(name, symbol, decimals):", 0);
+    // Check if name is '{namespace-methodName-lineNumber}'
+    assert.equal(functionCallNode.name, "erc20-initializer-0", "fails to set name");
 
     // and check if isOver is TRUE
     assert.equal(isOver, true);
+
+    const functionCallNode2 = CairoFunctionCallNode.createNode(
+      '      ERC20._mint(recipient, initial_supply)',
+      0,
+      [cairoNode]
+    );
+
+    // Check if name is '{namespace-methodName-lineNumber}'
+    const isOver2 = functionCallNode2.processLine("      ERC20._mint(recipient, initial_supply)", 0);
+    assert.equal(functionCallNode2.name, "erc20-_mint-0", "fails to set name");
+
+    assert.equal(isOver2, true)
+    
+
+
+
   });
 });
