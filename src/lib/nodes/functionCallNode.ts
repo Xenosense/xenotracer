@@ -29,9 +29,15 @@ export default class CairoFunctionCallNode extends BaseNode {
     currentRunningNodeStack: BaseNode[]
   ): boolean {
     // Check if it is 'end' textLine
-    const regex = /(\w+)\.(\w+)\([\w\s\,]*\)/;
+    const regex = /\w+\([\w,\s]*\)/;
     const match = regex.exec(textLine);
     if (match) {
+      return true;
+    }
+
+    const regexInTheMiddleOfFunction = /\s+\w+,/;
+    const matchInTheMiddleOfFunction = regexInTheMiddleOfFunction.exec(textLine);
+    if (matchInTheMiddleOfFunction){
       return true;
     }
 
@@ -46,7 +52,12 @@ export default class CairoFunctionCallNode extends BaseNode {
    * @returns always return false. This node will finish its job on the end of line.
    */
   processLine(textLine: string, lineNumber: number): boolean {
-    return true;
+    const regexEndOfFunction = /\w+\)/
+    const match = regexEndOfFunction.exec(textLine)
+    if (match){
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -65,13 +76,29 @@ export default class CairoFunctionCallNode extends BaseNode {
     lineNumber: number,
     parents: BaseNode[]
   ): BaseNode {
-    const regex = /(\w+)\.(\w+)\([\w\s\,]*\)/;
-    const match = regex.exec(textLine);
-    if (match) {
-      const name: string = match[1].concat("-",match[2], "-", lineNumber.toString());
+    const regexWithNamespace = /(\w+)\.(\w+)\([\w\s\,]*\)/;
+    const matchWithNamespace = regexWithNamespace.exec(textLine);
+    if (matchWithNamespace) {
+      const name: string = matchWithNamespace[1].concat("-",matchWithNamespace[2], "-", lineNumber.toString());
       return new CairoFunctionCallNode(name, lineNumber, parents);
     }
-    // if not match, raise error
+
+    const regexWithoutNamespace = /\w+\([\w,\s]*\)/
+    const matchWithoutNamespace = regexWithoutNamespace.exec(textLine);
+    if (matchWithoutNamespace) {
+      const namespace = regexWithNamespace.exec(textLine);
+      if (namespace){
+        const nameSpaceName = namespace[1];
+        const name: string = matchWithoutNamespace[1].concat(nameSpaceName, "-", lineNumber.toString());
+        return new CairoFunctionCallNode(name, lineNumber, parents);
+
+      }
+      else{
+        const nameSpaceName = "null";
+        const name: string = matchWithoutNamespace[1].concat(nameSpaceName, "-", lineNumber.toString());
+        return new CairoFunctionCallNode(name, lineNumber, parents);
+      }
+    }
     throw new Error(
       "Cannot create namespace node, invalid text line on line " + lineNumber
     );
