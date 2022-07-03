@@ -81,18 +81,18 @@ export default class CairoFunctionCallNode extends BaseNode {
       return new CairoFunctionCallNode(name, lineNumber, parents);
     }
     // if not using namespace
-    const regexWithoutNamespace = /\w+\([\w,\s]*\)/
+    const regexWithoutNamespace = /(\w+)\([\w\s]*,/
     const matchWithoutNamespace = regexWithoutNamespace.exec(textLine);
+    
     if (matchWithoutNamespace) {
       const namespace = regexWithNamespace.exec(textLine);
+
       if (namespace){
-        const nameSpaceName = namespace[1];
-        const name: string = matchWithoutNamespace[1].concat(nameSpaceName, "-", lineNumber.toString());
+        const name: string = matchWithoutNamespace[1].concat(namespace[1].toString(), "-", lineNumber.toString());
         return new CairoFunctionCallNode(name, lineNumber, parents);
       }
       else{
-        const nameSpaceName = "null";
-        const name: string = matchWithoutNamespace[1].concat(nameSpaceName, "-", lineNumber.toString());
+        const name: string = "null".concat("-", matchWithoutNamespace[1], "-", lineNumber.toString());
         return new CairoFunctionCallNode(name, lineNumber, parents);
       }
     }

@@ -179,6 +179,15 @@ suite("function-call Node Test Suite", () => {
       assert.equal(true, isOver, "fails to process end scope")
     }
 
+    {
+      const functionCallNode = CairoFunctionCallNode.createNode(
+        '          _wtf(recipient,',
+        1,
+        [cairoNode]
+      );
+      assert.equal('null-_wtf-1', functionCallNode.name)
+    }
+
 
     
     
