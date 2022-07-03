@@ -172,11 +172,11 @@ suite("function-call Node Test Suite", () => {
         0,
         [cairoNode]
       );
-      
+
       const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
       assert.equal("ERC20-initializer-0", functionCallNode.name);
-      assert.equal('ERC20', functionCallNodeCasted.namespaceName)
-      assert.equal('initializer', functionCallNodeCasted.functionCallName)
+      assert.equal("ERC20", functionCallNodeCasted.namespaceName);
+      assert.equal("initializer", functionCallNodeCasted.functionCallName);
 
       const isOver = functionCallNode.processLine(
         "    ERC20.initializer(name, symbol, decimals) ",
@@ -194,8 +194,8 @@ suite("function-call Node Test Suite", () => {
 
       const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
       assert.equal("null-_wtf-1", functionCallNode.name);
-      assert.equal('null', functionCallNodeCasted.namespaceName)
-      assert.equal('_wtf', functionCallNodeCasted.functionCallName)
+      assert.equal("null", functionCallNodeCasted.namespaceName);
+      assert.equal("_wtf", functionCallNodeCasted.functionCallName);
 
       const isNotOver = functionCallNode.processLine("    asd,", 1);
       assert.equal(false, isNotOver, "fails to process end scope");
@@ -213,8 +213,8 @@ suite("function-call Node Test Suite", () => {
 
       const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
       assert.equal("ERC20-_wtf-1", functionCallNode.name);
-      assert.equal('ERC20', functionCallNodeCasted.namespaceName)
-      assert.equal('_wtf', functionCallNodeCasted.functionCallName)
+      assert.equal("ERC20", functionCallNodeCasted.namespaceName);
+      assert.equal("_wtf", functionCallNodeCasted.functionCallName);
 
       const isNotOver = functionCallNode.processLine("    asd,", 1);
       assert.equal(false, isNotOver, "fails to process end scope");
