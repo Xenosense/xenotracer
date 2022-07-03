@@ -16,7 +16,7 @@ suite("function-call Node Test Suite", () => {
 
     // accept case
     const isInExampleOne = CairoFunctionCallNode.isTextLineThisNode(
-      'ERC20.initializer(name, symbol, decimals)',
+      "ERC20.initializer(name, symbol, decimals)",
       [cairoNode]
     );
 
@@ -27,7 +27,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleTwo = CairoFunctionCallNode.isTextLineThisNode(
-      'ERC20._mint(recipient, initial_supply),',
+      "ERC20._mint(recipient, initial_supply),",
       [cairoNode]
     );
     assert.equal(
@@ -37,7 +37,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleThree = CairoFunctionCallNode.isTextLineThisNode(
-      'let (name) = ERC20.name()',
+      "let (name) = ERC20.name()",
       [cairoNode]
     );
     assert.equal(
@@ -47,7 +47,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-      'let (totalSupply: Uint256) = ERC20.total_supply()',
+      "let (totalSupply: Uint256) = ERC20.total_supply()",
       [cairoNode]
     );
     assert.equal(
@@ -58,7 +58,7 @@ suite("function-call Node Test Suite", () => {
 
     {
       const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-        '_mint(recipient, initial_supply)',
+        "_mint(recipient, initial_supply)",
         [cairoNode]
       );
       assert.equal(
@@ -70,7 +70,7 @@ suite("function-call Node Test Suite", () => {
 
     {
       const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-        'let (totalSupply: Uint256) = total_supply()',
+        "let (totalSupply: Uint256) = total_supply()",
         [cairoNode]
       );
       assert.equal(
@@ -82,7 +82,7 @@ suite("function-call Node Test Suite", () => {
 
     {
       const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-        'let (totalSupply: Uint256) = total_supply(asd, asdf)',
+        "let (totalSupply: Uint256) = total_supply(asd, asdf)",
         [cairoNode]
       );
       assert.equal(
@@ -94,7 +94,7 @@ suite("function-call Node Test Suite", () => {
 
     {
       const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-        ' asd,',
+        " asd,",
         [cairoNode]
       );
       assert.equal(
@@ -106,7 +106,7 @@ suite("function-call Node Test Suite", () => {
 
     {
       const isNotInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
-        'initial_supply)',
+        "initial_supply)",
         [cairoNode]
       );
       assert.equal(
@@ -118,7 +118,7 @@ suite("function-call Node Test Suite", () => {
 
     // reject case
     const isInExampleFive = CairoFunctionCallNode.isTextLineThisNode(
-      '%lang starknet',
+      "%lang starknet",
       [cairoNode]
     );
     assert.equal(
@@ -128,7 +128,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleSix = CairoFunctionCallNode.isTextLineThisNode(
-      'from starkware.cairo.common.cairo_builtins import HashBuiltin',
+      "from starkware.cairo.common.cairo_builtins import HashBuiltin",
       [cairoNode]
     );
     assert.equal(
@@ -138,7 +138,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleSeven = CairoFunctionCallNode.isTextLineThisNode(
-      'return (remaining)',
+      "return (remaining)",
       [cairoNode]
     );
     assert.equal(
@@ -148,7 +148,7 @@ suite("function-call Node Test Suite", () => {
     );
 
     const isInExampleEight = CairoFunctionCallNode.isTextLineThisNode(
-      '}(spender: felt, amount: Uint256) -> (success: felt):',
+      "}(spender: felt, amount: Uint256) -> (success: felt):",
       [cairoNode]
     );
     assert.equal(
@@ -156,7 +156,6 @@ suite("function-call Node Test Suite", () => {
       false,
       "fails to detect function-call with space before 7"
     );
-   
   });
 
   /**
@@ -169,58 +168,54 @@ suite("function-call Node Test Suite", () => {
     // Return true if the line is a function-call (starts with decorator)
     {
       const functionCallNode = CairoFunctionCallNode.createNode(
-        '      ERC20.initializer(name, symbol, decimals):',
+        "      ERC20.initializer(name, symbol, decimals):",
         0,
         [cairoNode]
       );
 
-      assert.equal('ERC20-initializer-0', functionCallNode.name)
+      assert.equal("ERC20-initializer-0", functionCallNode.name);
       // assert.equal('ERC20', functionCallNode.namespaceName)
       // assert.equal('initializer', functionCallNode.functionCallName)
 
-      const isOver = functionCallNode.processLine("    ERC20.initializer(name, symbol, decimals) ", 0)
-      assert.equal(true, isOver, "fails to process end scope")
-
-      
+      const isOver = functionCallNode.processLine(
+        "    ERC20.initializer(name, symbol, decimals) ",
+        0
+      );
+      assert.equal(true, isOver, "fails to process end scope");
     }
-    
 
     {
       const functionCallNode = CairoFunctionCallNode.createNode(
-        '          _wtf(recipient,',
+        "          _wtf(recipient,",
         1,
         [cairoNode]
       );
-      assert.equal('null-_wtf-1', functionCallNode.name)
+      assert.equal("null-_wtf-1", functionCallNode.name);
       // assert.equal('null', functionCallNode.namespaceName)
       // assert.equal('_wtf', functionCallNode.functionCallName)
 
-      const isNotOver = functionCallNode.processLine('    asd,', 1)
-      assert.equal(false, isNotOver, "fails to process end scope")
+      const isNotOver = functionCallNode.processLine("    asd,", 1);
+      assert.equal(false, isNotOver, "fails to process end scope");
 
-      const isOver = functionCallNode.processLine('    initial_supply)', 2)
-      assert.equal(true, isOver, "fails to process end scope")
-
+      const isOver = functionCallNode.processLine("    initial_supply)", 2);
+      assert.equal(true, isOver, "fails to process end scope");
     }
 
     {
       const functionCallNode = CairoFunctionCallNode.createNode(
-        '          ERC20._wtf(recipient, ',
+        "          ERC20._wtf(recipient, ",
         1,
         [cairoNode]
       );
-      assert.equal('ERC20-_wtf-1', functionCallNode.name)
+      assert.equal("ERC20-_wtf-1", functionCallNode.name);
       // assert.equal('ERC20', functionCallNode.namespaceName)
       // assert.equal('_wtf', functionCallNode.functionCallName)
 
-      const isNotOver = functionCallNode.processLine('    asd,', 1)
-      assert.equal(false, isNotOver, "fails to process end scope")
+      const isNotOver = functionCallNode.processLine("    asd,", 1);
+      assert.equal(false, isNotOver, "fails to process end scope");
 
-      const isOver = functionCallNode.processLine('    initial_supply)', 2)
-      assert.equal(true, isOver, "fails to process end scope")
-
+      const isOver = functionCallNode.processLine("    initial_supply)", 2);
+      assert.equal(true, isOver, "fails to process end scope");
     }
-
-
   });
 });

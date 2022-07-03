@@ -4,7 +4,6 @@
 import { BaseNode } from "../base";
 import { EntitiesType } from "../enumCollectionsAndUtils";
 
-
 export default class CairoFunctionCallNode extends BaseNode {
   public namespaceName: string;
   public functionCallName: string;
@@ -15,7 +14,13 @@ export default class CairoFunctionCallNode extends BaseNode {
    * @param startLine start line of the node
    * @param parents parents node. If you need something to do with parents, you can use this.
    */
-  constructor(name: string, startLine: number, parents: BaseNode[], namespaceName: string, functionCallName: string) {
+  constructor(
+    name: string,
+    startLine: number,
+    parents: BaseNode[],
+    namespaceName: string,
+    functionCallName: string
+  ) {
     super(name, startLine, parents, EntitiesType.functionCall);
     this.namespaceName = namespaceName;
     this.functionCallName = functionCallName;
@@ -33,12 +38,12 @@ export default class CairoFunctionCallNode extends BaseNode {
     textLine: string,
     currentRunningNodeStack: BaseNode[]
   ): boolean {
-    
     // if not using namespace
     // e.g. name()
     const regexInTheMiddleOfFunction = /^\s+\w+,/;
-    const matchInTheMiddleOfFunction = regexInTheMiddleOfFunction.exec(textLine);
-    if (matchInTheMiddleOfFunction){
+    const matchInTheMiddleOfFunction =
+      regexInTheMiddleOfFunction.exec(textLine);
+    if (matchInTheMiddleOfFunction) {
       return true;
     }
 
@@ -53,9 +58,9 @@ export default class CairoFunctionCallNode extends BaseNode {
    * @returns always return false. This node will finish its job on the end of line.
    */
   processLine(textLine: string, lineNumber: number): boolean {
-    const regexEndOfFunction = /\w+\)/
-    const match = regexEndOfFunction.exec(textLine)
-    if (match){
+    const regexEndOfFunction = /\w+\)/;
+    const match = regexEndOfFunction.exec(textLine);
+    if (match) {
       return true;
     }
     return false;
@@ -77,25 +82,46 @@ export default class CairoFunctionCallNode extends BaseNode {
     lineNumber: number,
     parents: BaseNode[]
   ): BaseNode {
-
     // if using namespace
     const regexWithNamespace = /(\w+)\.(\w+)\([\w\s\,]*/;
     const matchWithNamespace = regexWithNamespace.exec(textLine);
     if (matchWithNamespace) {
       const namespaceName = matchWithNamespace[1];
       const functionCallName = matchWithNamespace[2];
-      const name: string = namespaceName.concat("-",functionCallName, "-", lineNumber.toString());
-      return new CairoFunctionCallNode(name, lineNumber, parents, namespaceName, functionCallName);
+      const name: string = namespaceName.concat(
+        "-",
+        functionCallName,
+        "-",
+        lineNumber.toString()
+      );
+      return new CairoFunctionCallNode(
+        name,
+        lineNumber,
+        parents,
+        namespaceName,
+        functionCallName
+      );
     }
     // if not using namespace
-    const regexWithoutNamespace = /(\w+)\([\w\s]*,/
+    const regexWithoutNamespace = /(\w+)\([\w\s]*,/;
     const matchWithoutNamespace = regexWithoutNamespace.exec(textLine);
-    
+
     if (matchWithoutNamespace) {
-        const namespaceName = "null"
-        const functionCallName = matchWithoutNamespace[1]
-        const name: string = namespaceName.concat("-", functionCallName, "-", lineNumber.toString());
-        return new CairoFunctionCallNode(name, lineNumber, parents, namespaceName, functionCallName);
+      const namespaceName = "null";
+      const functionCallName = matchWithoutNamespace[1];
+      const name: string = namespaceName.concat(
+        "-",
+        functionCallName,
+        "-",
+        lineNumber.toString()
+      );
+      return new CairoFunctionCallNode(
+        name,
+        lineNumber,
+        parents,
+        namespaceName,
+        functionCallName
+      );
     }
     throw new Error(
       "Cannot create namespace node, invalid text line on line " + lineNumber

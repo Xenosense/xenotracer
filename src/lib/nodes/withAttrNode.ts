@@ -66,11 +66,16 @@ export default class CairoWithAttrNode extends BaseNode {
     parents: BaseNode[]
   ): BaseNode {
     if (this.isTextLineThisNode(textLine, parents)) {
-      return new CairoWithAttrNode("with_attr".concat(lineNumber.toString()), lineNumber, parents);
+      return new CairoWithAttrNode(
+        "with_attr".concat(lineNumber.toString()),
+        lineNumber,
+        parents
+      );
     }
     // if not match, raise error
     throw new Error(
-      "Cannot create withAttr node, invalid text line on line" + lineNumber.toString()
+      "Cannot create withAttr node, invalid text line on line" +
+        lineNumber.toString()
     );
   }
 }

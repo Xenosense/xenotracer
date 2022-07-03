@@ -152,8 +152,7 @@ export class CairoParser {
         lineNumber,
         runningStackClone
       );
-    }
-    else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoNamespaceNode.createNode(
         line,
         lineNumber,
