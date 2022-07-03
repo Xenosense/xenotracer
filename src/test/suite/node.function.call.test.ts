@@ -186,6 +186,13 @@ suite("function-call Node Test Suite", () => {
         [cairoNode]
       );
       assert.equal('null-_wtf-1', functionCallNode.name)
+
+      const isNotOver = functionCallNode.processLine('    asd,', 1)
+      assert.equal(false, isNotOver, "fails to process end scope")
+
+      const isOver = functionCallNode.processLine('    initial_supply)', 2)
+      assert.equal(true, isOver, "fails to process end scope")
+
     }
 
 
