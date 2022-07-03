@@ -1,14 +1,13 @@
 /**
  * A collections of Node
  */
-import { match } from "assert";
 import { BaseNode } from "../base";
 import { EntitiesType } from "../enumCollectionsAndUtils";
 
 
 export default class CairoFunctionCallNode extends BaseNode {
-  namespaceName: string;
-  functionCallName: string;
+  public namespaceName: string;
+  public functionCallName: string;
 
   /**
    * Creates an instance of namespace node.
@@ -20,7 +19,6 @@ export default class CairoFunctionCallNode extends BaseNode {
     super(name, startLine, parents, EntitiesType.functionCall);
     this.namespaceName = namespaceName;
     this.functionCallName = functionCallName;
-
   }
 
   /**
