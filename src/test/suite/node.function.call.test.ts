@@ -19,20 +19,21 @@ suite("function-call Node Test Suite", () => {
       'ERC20.initializer(name, symbol, decimals)',
       [cairoNode]
     );
+
     assert.equal(
       isInExampleOne,
-      true,
-      "fails to detect function-call with space before"
+      false,
+      "fails to detect function-call with space before 0"
     );
 
     const isInExampleTwo = CairoFunctionCallNode.isTextLineThisNode(
-      'ERC20._mint(recipient, initial_supply)',
+      'ERC20._mint(recipient, initial_supply),',
       [cairoNode]
     );
     assert.equal(
       isInExampleTwo,
-      true,
-      "fails to detect function-call with space before"
+      false,
+      "fails to detect function-call with space before 1"
     );
 
     const isInExampleThree = CairoFunctionCallNode.isTextLineThisNode(
@@ -41,8 +42,8 @@ suite("function-call Node Test Suite", () => {
     );
     assert.equal(
       isInExampleThree,
-      true,
-      "fails to detect function-call with space before"
+      false,
+      "fails to detect function-call with space before 2"
     );
 
     const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
@@ -51,9 +52,69 @@ suite("function-call Node Test Suite", () => {
     );
     assert.equal(
       isInExampleFour,
-      true,
-      "fails to detect function-call with space before"
+      false,
+      "fails to detect function-call with space before 3"
     );
+
+    {
+      const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+        '_mint(recipient, initial_supply)',
+        [cairoNode]
+      );
+      assert.equal(
+        isInExampleFour,
+        false,
+        "fails to detect function-call _mint without namespace with no params"
+      );
+    }
+
+    {
+      const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+        'let (totalSupply: Uint256) = total_supply()',
+        [cairoNode]
+      );
+      assert.equal(
+        isInExampleFour,
+        false,
+        "fails to detect function-call _total_supply without namespace with no params"
+      );
+    }
+
+    {
+      const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+        'let (totalSupply: Uint256) = total_supply(asd, asdf)',
+        [cairoNode]
+      );
+      assert.equal(
+        isInExampleFour,
+        false,
+        "fails to detect function-call without namespace with params"
+      );
+    }
+
+    {
+      const isInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+        ' asd,',
+        [cairoNode]
+      );
+      assert.equal(
+        isInExampleFour,
+        true,
+        "fails to detect function-call without namespace in the middle of function"
+      );
+    }
+
+    {
+      const isNotInExampleFour = CairoFunctionCallNode.isTextLineThisNode(
+        'initial_supply)',
+        [cairoNode]
+      );
+      assert.equal(
+        isInExampleFour,
+        false,
+        "fails to detect function-call without namespace in the end of function"
+      );
+    }
 
     // reject case
     const isInExampleFive = CairoFunctionCallNode.isTextLineThisNode(
@@ -63,7 +124,7 @@ suite("function-call Node Test Suite", () => {
     assert.equal(
       isInExampleFive,
       false,
-      "fails to detect function-call with space before"
+      "fails to detect function-call with space before 4"
     );
 
     const isInExampleSix = CairoFunctionCallNode.isTextLineThisNode(
@@ -73,7 +134,7 @@ suite("function-call Node Test Suite", () => {
     assert.equal(
       isInExampleSix,
       false,
-      "fails to detect function-call with space before"
+      "fails to detect function-call with space before 5"
     );
 
     const isInExampleSeven = CairoFunctionCallNode.isTextLineThisNode(
@@ -83,7 +144,7 @@ suite("function-call Node Test Suite", () => {
     assert.equal(
       isInExampleSeven,
       false,
-      "fails to detect function-call with space before"
+      "fails to detect function-call with space before 6"
     );
 
     const isInExampleEight = CairoFunctionCallNode.isTextLineThisNode(
@@ -93,7 +154,7 @@ suite("function-call Node Test Suite", () => {
     assert.equal(
       isInExampleEight,
       false,
-      "fails to detect function-call with space before"
+      "fails to detect function-call with space before 7"
     );
    
   });
@@ -106,30 +167,40 @@ suite("function-call Node Test Suite", () => {
     let cairoNode = new CairoContractNode("testing", 0, []);
 
     // Return true if the line is a function-call (starts with decorator)
-    const functionCallNode = CairoFunctionCallNode.createNode(
-      '      ERC20.initializer(name, symbol, decimals):',
-      0,
-      [cairoNode]
-    );
+    {
+      const functionCallNode = CairoFunctionCallNode.createNode(
+        '      ERC20.initializer(name, symbol, decimals):',
+        0,
+        [cairoNode]
+      );
 
-    const isOver = functionCallNode.processLine("      ERC20.initializer(name, symbol, decimals):", 0);
-    // Check if name is '{namespace-methodName-lineNumber}'
-    assert.equal(functionCallNode.name, "ERC20-initializer-0", "fails to set name");
+      assert.equal('ERC20-initializer-0', functionCallNode.name)
+      const isOver = functionCallNode.processLine("    ERC20.initializer(name, symbol, decimals) ", 0)
+      assert.equal(true, isOver, "fails to process end scope")
+    }
 
-    // and check if isOver is TRUE
-    assert.equal(isOver, true);
 
-    const functionCallNode2 = CairoFunctionCallNode.createNode(
-      '      ERC20._mint(recipient, initial_supply)',
-      0,
-      [cairoNode]
-    );
+    
+    
 
-    // Check if name is '{namespace-methodName-lineNumber}'
-    const isOver2 = functionCallNode2.processLine("      ERC20._mint(recipient, initial_supply)", 0);
-    assert.equal(functionCallNode2.name, "ERC20-_mint-0", "fails to set name");
+    // const isOver = functionCallNode.processLine("      ERC20.initializer(name, symbol, decimals):", 0);
+    // // Check if name is '{namespace-methodName-lineNumber}'
+    // assert.equal(functionCallNode.name, "ERC20-initializer-0", "fails to set name");
 
-    assert.equal(isOver2, true)
+    // // and check if isOver is TRUE
+    // assert.equal(isOver, true);
+
+    // const functionCallNode2 = CairoFunctionCallNode.createNode(
+    //   '      ERC20._mint(recipient, initial_supply)',
+    //   0,
+    //   [cairoNode]
+    // );
+
+    // // Check if name is '{namespace-methodName-lineNumber}'
+    // const isOver2 = functionCallNode2.processLine("      ERC20._mint(recipient, initial_supply)", 0);
+    // assert.equal(functionCallNode2.name, "ERC20-_mint-0", "fails to set name");
+
+    // assert.equal(isOver2, true)
     
 
 

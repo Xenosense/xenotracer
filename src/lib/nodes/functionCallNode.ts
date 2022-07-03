@@ -28,14 +28,10 @@ export default class CairoFunctionCallNode extends BaseNode {
     textLine: string,
     currentRunningNodeStack: BaseNode[]
   ): boolean {
-    // Check if it is 'end' textLine
-    const regex = /\w+\([\w,\s]*\)/;
-    const match = regex.exec(textLine);
-    if (match) {
-      return true;
-    }
-
-    const regexInTheMiddleOfFunction = /\s+\w+,/;
+    
+    // if not using namespace
+    // e.g. name()
+    const regexInTheMiddleOfFunction = /^\s+\w+,/;
     const matchInTheMiddleOfFunction = regexInTheMiddleOfFunction.exec(textLine);
     if (matchInTheMiddleOfFunction){
       return true;
@@ -76,13 +72,15 @@ export default class CairoFunctionCallNode extends BaseNode {
     lineNumber: number,
     parents: BaseNode[]
   ): BaseNode {
+
+    // if using namespace
     const regexWithNamespace = /(\w+)\.(\w+)\([\w\s\,]*\)/;
     const matchWithNamespace = regexWithNamespace.exec(textLine);
     if (matchWithNamespace) {
       const name: string = matchWithNamespace[1].concat("-",matchWithNamespace[2], "-", lineNumber.toString());
       return new CairoFunctionCallNode(name, lineNumber, parents);
     }
-
+    // if not using namespace
     const regexWithoutNamespace = /\w+\([\w,\s]*\)/
     const matchWithoutNamespace = regexWithoutNamespace.exec(textLine);
     if (matchWithoutNamespace) {
@@ -91,7 +89,6 @@ export default class CairoFunctionCallNode extends BaseNode {
         const nameSpaceName = namespace[1];
         const name: string = matchWithoutNamespace[1].concat(nameSpaceName, "-", lineNumber.toString());
         return new CairoFunctionCallNode(name, lineNumber, parents);
-
       }
       else{
         const nameSpaceName = "null";
