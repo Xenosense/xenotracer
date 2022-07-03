@@ -12,6 +12,7 @@ import CairoNamespaceNode from "./nodes/namespaceNode";
 import CairoWithAttrNode from "./nodes/withAttrNode";
 import CairoConditionalNode from "./nodes/conditionalNode";
 import CairoCommentNode from "./nodes/commentNode";
+import CairoImportNode from "./nodes/importNode";
 
 /**
  * Parser class.
@@ -50,6 +51,7 @@ export class CairoParser {
     EntitiesType.nameSpace,
     EntitiesType.scopingWithAttr,
     EntitiesType.conditionalStatement,
+    EntitiesType.import,
   ];
 
   // Main File Contract Node. Used for running the parser.
@@ -143,7 +145,14 @@ export class CairoParser {
         lineNumber,
         runningStackClone
       );
-    } else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (CairoImportNode.isTextLineThisNode(line, runningStackClone)) {
+      chosenNode = CairoImportNode.createNode(
+        line,
+        lineNumber,
+        runningStackClone
+      );
+    }
+    else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoNamespaceNode.createNode(
         line,
         lineNumber,

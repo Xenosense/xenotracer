@@ -31,6 +31,19 @@ suite("Parser Test Suite", () => {
     // childrenFunction is a map of function nodes, calculate its length
     // Then assert to 12
     assert.equal(childrenFunctions?.size, 12);
+
+    // Get its import chidren (entitiestype.import) and see if ERC20 is presents
+    // in the map of import
+    // should return true
+    const childrenImports = mainContract?.children.get(EntitiesType.import);
+    const isERC20Present = childrenImports?.has("ERC20");
+
+    assert.equal(isERC20Present, true);
+
+    // get its import children and also check if Cat and Dogggie are presents
+    // should return true
+    assert.equal(childrenImports?.has("Doggie"), true);
+    assert.equal(childrenImports?.has("Cat"), true);
   });
 
   /**
@@ -60,4 +73,6 @@ suite("Parser Test Suite", () => {
 
     assert(funcName === "increaseAllowance");
   });
+
+
 });
