@@ -11,4 +11,5 @@ export enum EntitiesType {
   scopingWithAttr,
   comment,
   functionCall,
+  import,
 }
