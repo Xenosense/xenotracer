@@ -57,6 +57,9 @@ export class CairoParser {
   // Main File Contract Node. Used for running the parser.
   private _mainContract: CairoContractNode | null;
 
+  // Other File Contract Node that is recursively parsed. It is a list of contracts
+  private _otherContracts: CairoContractNode[] = [];
+
   // Running stack to parse a file. It is a stack of nodes.
   private _runningStack: CairoContractNode[] = [];
 
@@ -74,36 +77,58 @@ export class CairoParser {
     return this._mainContract;
   }
 
+  public parseContractRecursively() {
+    // TODO: Implement this
+  }
+
   /**
    * Entry point of the parser.
    * Parses a contract OR file and make it into a tree of nodes.
    * It will be stored as private variable in the class.
    * @param code the text of the contract
+   * @param fileName the name of the file
+   * @param isMainContract if the contract is the main contract
    */
-  public parseAFile(code: string, fileName: string): void {
+  public parseAFile(
+    code: string,
+    fileName: string,
+    isMainContract: boolean = true
+  ): void {
     // First we split the code into lines
     const lines = code.split("\n");
 
     // Then, we initiate a Contract Node!
     // remove the '.cairo' from fileName if its there
     const contractName = fileName.replace(".cairo", "");
-    this._mainContract = new CairoContractNode(contractName, 0, []);
+
+    let runningContract: CairoContractNode;
+
+    // If it is a main contract, then we create a new contract node
+    // Otherwise, we create a new contract node and add it to the list of contracts
+    if (isMainContract) {
+      this._mainContract = new CairoContractNode(contractName, 0, []);
+      runningContract = this._mainContract;
+    } else {
+      runningContract = new CairoContractNode(contractName, 0, []);
+      this._otherContracts.push(runningContract);
+    }
 
     // Add it into the running stack
-    this._runningStack.push(this._mainContract);
+    this._runningStack.push(runningContract);
 
-    // Set current Node to _mainContract
-    this._currentNode = this._mainContract;
-
+    // Set current to running contract
+    this._currentNode = runningContract;
+  
     // Loop through each line
     for (let i = 0; i < lines.length; i++) {
       this.parseLine(lines[i], i);
     }
 
     // Check if the _currentNode is the mainContract, if no, throw error
-    if (this._currentNode !== this._mainContract) {
+    if (this._currentNode !== runningContract) {
+      // Improvement, add better error message
       throw new Error(
-        "Error: Parser: Current node is not the main contract! Something wrong with your file!"
+        "Error: Parser: Something wrong with your cairo file!"
       );
     }
   }
@@ -151,8 +176,7 @@ export class CairoParser {
         lineNumber,
         runningStackClone
       );
-    }
-    else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
+    } else if (CairoNamespaceNode.isTextLineThisNode(line, runningStackClone)) {
       chosenNode = CairoNamespaceNode.createNode(
         line,
         lineNumber,
