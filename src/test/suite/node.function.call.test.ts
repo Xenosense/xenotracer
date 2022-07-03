@@ -195,30 +195,21 @@ suite("function-call Node Test Suite", () => {
 
     }
 
+    {
+      const functionCallNode = CairoFunctionCallNode.createNode(
+        '          ERC20._wtf(recipient, ',
+        1,
+        [cairoNode]
+      );
+      assert.equal('ERC20-_wtf-1', functionCallNode.name)
 
-    
-    
+      const isNotOver = functionCallNode.processLine('    asd,', 1)
+      assert.equal(false, isNotOver, "fails to process end scope")
 
-    // const isOver = functionCallNode.processLine("      ERC20.initializer(name, symbol, decimals):", 0);
-    // // Check if name is '{namespace-methodName-lineNumber}'
-    // assert.equal(functionCallNode.name, "ERC20-initializer-0", "fails to set name");
+      const isOver = functionCallNode.processLine('    initial_supply)', 2)
+      assert.equal(true, isOver, "fails to process end scope")
 
-    // // and check if isOver is TRUE
-    // assert.equal(isOver, true);
-
-    // const functionCallNode2 = CairoFunctionCallNode.createNode(
-    //   '      ERC20._mint(recipient, initial_supply)',
-    //   0,
-    //   [cairoNode]
-    // );
-
-    // // Check if name is '{namespace-methodName-lineNumber}'
-    // const isOver2 = functionCallNode2.processLine("      ERC20._mint(recipient, initial_supply)", 0);
-    // assert.equal(functionCallNode2.name, "ERC20-_mint-0", "fails to set name");
-
-    // assert.equal(isOver2, true)
-    
-
+    }
 
 
   });

@@ -81,7 +81,7 @@ export default class CairoFunctionCallNode extends BaseNode {
   ): BaseNode {
 
     // if using namespace
-    const regexWithNamespace = /(\w+)\.(\w+)\([\w\s\,]*\)/;
+    const regexWithNamespace = /(\w+)\.(\w+)\([\w\s\,]*/;
     const matchWithNamespace = regexWithNamespace.exec(textLine);
     if (matchWithNamespace) {
       const namespaceName = matchWithNamespace[1];
