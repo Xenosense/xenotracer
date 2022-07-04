@@ -13,6 +13,7 @@ import CairoWithAttrNode from "./nodes/withAttrNode";
 import CairoConditionalNode from "./nodes/conditionalNode";
 import CairoCommentNode from "./nodes/commentNode";
 import CairoImportNode from "./nodes/importNode";
+import { CairoFileFinder, readFile } from "./traverser";
 
 /**
  * Parser class.
@@ -77,8 +78,133 @@ export class CairoParser {
     return this._mainContract;
   }
 
-  public parseContractRecursively() {
-    // TODO: Implement this
+  private helperRecursiveParser(contractnode: BaseNode): string[] {
+    const importObjects = contractnode.children.get(EntitiesType.import)!;
+
+    // path that want to be explored
+    let pathAdded: string[] = [];
+
+    // placeholder to see if the import node has been added
+    let doneTraverseImportName: string[] = [];
+
+    // Loop through the import children that contains map of string, basenode
+    for (const [key, value] of importObjects) {
+      // get value (basenode) and cast it to CairoImportNode
+      const importNode = value as CairoImportNode;
+
+      // get the import node name and add to doneTraverseImportName
+      const importName = importNode.name;
+
+      // check if importName is already in doneTraverseImportName
+      // if yes just skip
+      if (doneTraverseImportName.includes(importName)) {
+        continue;
+      }
+      doneTraverseImportName.push(importName);
+
+      // get `imports` map variable from the node and iterate through it
+      const nodeImports = importNode.imports;
+
+      // loop through the nodeImports
+      for (const [key, value] of nodeImports) {
+        // get the importPath from value map
+        const importPath = value.get("importPath")!;
+
+        // check if the first path is `starkware` (split by .)
+        // if yes, skip. We ignore starkware imports
+
+        const splittedPath = importPath.split(".");
+        if (splittedPath[0] === "starkware") {
+          continue;
+        }
+
+        // check if importPath is in pathAdded
+        if (!pathAdded.includes(importPath)) {
+          // if not, add it to pathAdded
+          pathAdded.push(importPath);
+        }
+      }
+    }
+    return pathAdded;
+  }
+
+  private recursivePathTilldone(
+    pathAdded: string[],
+    currentWorkingDir: string,
+    additionalPaths: string[]
+  ) {
+    // instantiate our traverser
+    const cairoFileFinder = new CairoFileFinder(
+      currentWorkingDir,
+      additionalPaths
+    );
+
+    const queuePath = pathAdded.slice();
+    // placeholder so we can check if the path is already processed
+    const pathDone: string[] = [];
+
+    // we will loop while queuePath is not empty
+    while (queuePath.length > 0) {
+      // take the first item of queuePath (QUEUE)
+      const path = queuePath.shift()!;
+
+      // check if the path is already in pathDone
+      if (pathDone.includes(path)) {
+        continue;
+      }
+
+      // get the filepath using cairoFileFinder
+      const filePath = cairoFileFinder.getFilePath(path);
+
+      // if filePath is not null, read and parse it
+      // if null, skip
+      if (filePath) {
+        // read the file
+        const codeContent = readFile(filePath);
+
+        // Then parse the file
+        this.parseAFile(codeContent, filePath, false);
+
+        // get the last _otherContract then get its import path
+        // using helperRecursiveParser
+        const lastContract =
+          this._otherContracts[this._otherContracts.length - 1];
+
+        const importPaths = this.helperRecursiveParser(lastContract);
+
+        // then put them into queuePath. check first if they're already
+        // in pathDone
+        for (const importPath of importPaths) {
+          if (!pathDone.includes(importPath)) {
+            queuePath.push(importPath);
+          }
+        }
+      }
+
+      // add to pathDone
+      pathDone.push(path);
+    }
+  }
+
+  public parseContractRecursively(
+    code: string,
+    fileName: string,
+    currentWorkingDir: string,
+    additionalPaths: string[]
+  ) {
+    // First, parse the main file
+    this.parseAFile(code, fileName, true);
+
+    // get its import by checking each import node.
+    // get their path
+    const pathWillTraverse = this.helperRecursiveParser(this._mainContract!);
+
+    // do recursive Path till done
+    this.recursivePathTilldone(
+      pathWillTraverse,
+      currentWorkingDir,
+      additionalPaths
+    );
   }
 
   /**
@@ -118,7 +244,7 @@ export class CairoParser {
 
     // Set current to running contract
     this._currentNode = runningContract;
-  
+
     // Loop through each line
     for (let i = 0; i < lines.length; i++) {
       this.parseLine(lines[i], i);
@@ -127,10 +253,12 @@ export class CairoParser {
     // Check if the _currentNode is the mainContract, if no, throw error
     if (this._currentNode !== runningContract) {
       // Improvement, add better error message
-      throw new Error(
-        "Error: Parser: Something wrong with your cairo file!"
-      );
+      throw new Error("Error: Parser: Something wrong with your cairo file!");
     }
+
+    // Empty it
+    this._currentNode = null;
+    this._runningStack.pop();
   }
 
   /**

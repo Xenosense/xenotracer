@@ -68,3 +68,15 @@ export class CairoFileFinder {
         return filePathReturned;
     }
 }
+
+
+/** 
+ * Read file from filePath
+ * @param {string} filePath
+ * @returns {string} the file content
+ * 
+*/
+export function readFile(filePath: string): string {
+    return fs.readFileSync(filePath, "utf8");
+}
+
