@@ -207,23 +207,44 @@ suite("function-call Node Test Suite", () => {
       assert.equal(true, isOver, "fails to process end scope");
     }
 
-    // {
-    //   const functionCallNode = CairoFunctionCallNode.createNode(
-    //     "          ERC20._wtf(recipient, ",
-    //     1,
-    //     [cairoNode]
-    //   );
+    {
+      const functionCallNode = CairoFunctionCallNode.createNode(
+        "          ERC20.approve(spender, ",
+        1,
+        [cairoNode]
+      );
 
-    //   const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
-    //   assert.equal("ERC20-_wtf-1", functionCallNode.name);
-    //   assert.equal("ERC20", functionCallNodeCasted.namespaceName);
-    //   assert.equal("_wtf", functionCallNodeCasted.functionCallName);
+      const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
 
-    //   const isNotOver = functionCallNode.processLine("    asd,", 1);
-    //   assert.equal(false, isNotOver, "fails to process end scope");
+      assert.equal("approve1", functionCallNode.name);
+      assert.equal("ERC20", functionCallNodeCasted.namespaceName);
+      assert.equal("approve", functionCallNodeCasted.functionCallName);
 
-    //   const isOver = functionCallNode.processLine("    initial_supply)", 2);
-    //   assert.equal(true, isOver, "fails to process end scope");
-    // }
+      const isNotOver = functionCallNode.processLine("    asd,", 1);
+      assert.equal(false, isNotOver, "fails to process end scope");
+
+      const isOver = functionCallNode.processLine("    initial_supply)", 2);
+      assert.equal(true, isOver, "fails to process end scope");
+    }
+
+    {
+      const functionCallNode = CairoFunctionCallNode.createNode(
+        "          ERC721.wtf(spender, ",
+        1,
+        [cairoNode]
+      );
+
+      const functionCallNodeCasted = functionCallNode as CairoFunctionCallNode;
+
+      assert.equal("wtf1", functionCallNode.name);
+      assert.equal("ERC721", functionCallNodeCasted.namespaceName);
+      assert.equal("wtf", functionCallNodeCasted.functionCallName);
+
+      const isNotOver = functionCallNode.processLine("    asd,", 1);
+      assert.equal(false, isNotOver, "fails to process end scope");
+      
+      const isOver = functionCallNode.processLine("    ) ", 2);
+      assert.equal(true, isOver, "fails to process end scope");
+    }
   });
 });
