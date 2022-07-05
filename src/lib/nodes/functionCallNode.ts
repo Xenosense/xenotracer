@@ -85,27 +85,36 @@ export default class CairoFunctionCallNode extends BaseNode {
     // if using namespace
     const regex = /\w+.\w+\(.*\)*/
     const match = regex.exec(textLine);
+    // console.log(match);
 
     if (match) {
       const line = match[0]
-      // ERC20.balanceOf(address)
-      const splitResult = line.split(".")
-      const left = splitResult[0]
 
-      const right = splitResult[1]
-      const functionName = right.split("(")[0]
-      // if spaceName is empty
-
-      const name = functionName.concat(lineNumber.toString())
-      if (left === "") {
-        return new CairoFunctionCallNode(name, lineNumber, parents, null, functionName)
+      // if namespace exists
+      if (line.includes(".")) {
+        const namespaceRegex = /(\w+)\.(\w+)/
+        const namespaceMatch = namespaceRegex.exec(line)
+        if (namespaceMatch) {
+          const namespaceName = namespaceMatch[1]
+          const functionCallName = namespaceMatch[2]
+          const name = functionCallName.concat(lineNumber.toString())
+          return new CairoFunctionCallNode(name, lineNumber, parents, namespaceName, functionCallName)
+        }
       }
 
-      return new CairoFunctionCallNode(name, lineNumber, parents, left, functionName)
+      const functionNameRegex = /(\w+)\(/
+      const functionNameMatch = functionNameRegex.exec(line)
+      if (functionNameMatch) {
+        const functionCallName = functionNameMatch[1]
+        const name = functionCallName.concat(lineNumber.toString())
+        return new CairoFunctionCallNode(name, lineNumber, parents, null, functionCallName)
+      }
     }
-  
-    throw new Error(
-      "Cannot create namespace node, invalid text line on line " + lineNumber
-    );
+
+      throw new Error(
+        "Cannot create namespace node, invalid text line on line " + lineNumber
+      );
   }
+
 }
+
