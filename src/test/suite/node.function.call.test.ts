@@ -10,160 +10,160 @@ suite("function-call Node Test Suite", () => {
   /**
    * Test if a line is detected as a function-call node
    */
-  // test("test-function-call-node-start", () => {
-  //   // Initialize cairo node
-  //   let cairoNode = new CairoContractNode("testing", 0, []);
+  test("test-function-call-node-start", () => {
+    // Initialize cairo node
+    let cairoNode = new CairoContractNode("testing", 0, []);
 
-  //   {
-  //     const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "let (name) = ERC20.name()",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isInExample,
-  //       true,
-  //       "fails to detect function-call with namespace with no params"
-  //     );
-  //   }
+    {
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "let (name) = ERC20.name()",
+        [cairoNode]
+      );
+      assert.equal(
+        isInExample,
+        true,
+        "fails to detect function-call with namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "ERC20._mint(recipient, initial_supply)",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isInExample,
-  //       true,
-  //       "fails to detect function-call with namespace with no params"
-  //     );
-  //   }
+    {
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "ERC20._mint(recipient, initial_supply)",
+        [cairoNode]
+      );
+      assert.equal(
+        isInExample,
+        true,
+        "fails to detect function-call with namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "name()",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isInExample,
-  //       true,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
+    {
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "name()",
+        [cairoNode]
+      );
+      assert.equal(
+        isInExample,
+        true,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "_mint(recipient, initial_supply)",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isInExample,
-  //       true,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
+    {
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "_mint(recipient, initial_supply)",
+        [cairoNode]
+      );
+      assert.equal(
+        isInExample,
+        true,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "test(",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isInExample,
-  //       true,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
+    {
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "test(",
+        [cairoNode]
+      );
+      assert.equal(
+        isInExample,
+        true,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "a,",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
-
-
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "b,",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
-
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       ")",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
-  //   }
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "a,",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
 
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "%lang starknet",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "b,",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
-  //   }
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        ")",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "from starkware.cairo.common.cairo_builtins import HashBuiltin",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
 
-  //   }
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "%lang starknet",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
 
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "return (remaining)",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
+    }
 
-  //   }
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "from starkware.cairo.common.cairo_builtins import HashBuiltin",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
 
-  //   {
-  //     const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-  //       "}(spender: felt, amount: Uint256) -> (success: felt):",
-  //       [cairoNode]
-  //     );
-  //     assert.equal(
-  //       isNotInExample,
-  //       false,
-  //       "fails to detect function-call without namespace with no params"
-  //     );
+    }
 
-  //   }
-  // });
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "return (remaining)",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+
+    }
+
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
+        "}(spender: felt, amount: Uint256) -> (success: felt):",
+        [cairoNode]
+      );
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+
+    }
+  });
 
   /**
    * Test if a node process well and has ended the node
