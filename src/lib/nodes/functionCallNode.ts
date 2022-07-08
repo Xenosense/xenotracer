@@ -112,7 +112,7 @@ export default class CairoFunctionCallNode extends BaseNode {
     }
 
       throw new Error(
-        "Cannot create namespace node, invalid text line on line " + lineNumber
+        "Cannot create functionCall node, invalid text line on line " + lineNumber
       );
   }
 
