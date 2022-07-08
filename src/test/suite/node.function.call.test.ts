@@ -39,10 +39,9 @@ suite("function-call Node Test Suite", () => {
     }
 
     {
-      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-        "name()",
-        [cairoNode]
-      );
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode("name()", [
+        cairoNode,
+      ]);
       assert.equal(
         isInExample,
         true,
@@ -63,10 +62,9 @@ suite("function-call Node Test Suite", () => {
     }
 
     {
-      const isInExample = CairoFunctionCallNode.isTextLineThisNode(
-        "test(",
-        [cairoNode]
-      );
+      const isInExample = CairoFunctionCallNode.isTextLineThisNode("test(", [
+        cairoNode,
+      ]);
       assert.equal(
         isInExample,
         true,
@@ -75,23 +73,9 @@ suite("function-call Node Test Suite", () => {
     }
 
     {
-      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-        "a,",
-        [cairoNode]
-      );
-      assert.equal(
-        isNotInExample,
-        false,
-        "fails to detect function-call without namespace with no params"
-      );
-    }
-
-
-    {
-      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-        "b,",
-        [cairoNode]
-      );
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode("a,", [
+        cairoNode,
+      ]);
       assert.equal(
         isNotInExample,
         false,
@@ -100,10 +84,9 @@ suite("function-call Node Test Suite", () => {
     }
 
     {
-      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
-        ")",
-        [cairoNode]
-      );
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode("b,", [
+        cairoNode,
+      ]);
       assert.equal(
         isNotInExample,
         false,
@@ -111,6 +94,16 @@ suite("function-call Node Test Suite", () => {
       );
     }
 
+    {
+      const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(")", [
+        cairoNode,
+      ]);
+      assert.equal(
+        isNotInExample,
+        false,
+        "fails to detect function-call without namespace with no params"
+      );
+    }
 
     {
       const isNotInExample = CairoFunctionCallNode.isTextLineThisNode(
@@ -122,7 +115,6 @@ suite("function-call Node Test Suite", () => {
         false,
         "fails to detect function-call without namespace with no params"
       );
-
     }
 
     {
@@ -135,7 +127,6 @@ suite("function-call Node Test Suite", () => {
         false,
         "fails to detect function-call without namespace with no params"
       );
-
     }
 
     {
@@ -148,7 +139,6 @@ suite("function-call Node Test Suite", () => {
         false,
         "fails to detect function-call without namespace with no params"
       );
-
     }
 
     {
@@ -161,7 +151,6 @@ suite("function-call Node Test Suite", () => {
         false,
         "fails to detect function-call without namespace with no params"
       );
-
     }
   });
 
@@ -203,7 +192,10 @@ suite("function-call Node Test Suite", () => {
       assert.equal(null, functionCallNodeCasted.namespaceName);
       assert.equal("initializer", functionCallNodeCasted.functionCallName);
 
-      const isOver = functionCallNode.processLine("initializer(name, symbol, decimals):", 2);
+      const isOver = functionCallNode.processLine(
+        "initializer(name, symbol, decimals):",
+        2
+      );
       assert.equal(true, isOver, "fails to process end scope");
     }
 
@@ -242,7 +234,7 @@ suite("function-call Node Test Suite", () => {
 
       const isNotOver = functionCallNode.processLine("    asd,", 1);
       assert.equal(false, isNotOver, "fails to process end scope");
-      
+
       const isOver = functionCallNode.processLine("    ) ", 2);
       assert.equal(true, isOver, "fails to process end scope");
     }

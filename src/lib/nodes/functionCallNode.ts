@@ -41,8 +41,7 @@ export default class CairoFunctionCallNode extends BaseNode {
     // if not using namespace
     // e.g. name()
     const regex = /\w+.\w+\(.*\)*/;
-    const match =
-      regex.exec(textLine);
+    const match = regex.exec(textLine);
     if (match) {
       return true;
     }
@@ -83,38 +82,48 @@ export default class CairoFunctionCallNode extends BaseNode {
     parents: BaseNode[]
   ): BaseNode {
     // if using namespace
-    const regex = /\w+.\w+\(.*\)*/
+    const regex = /\w+.\w+\(.*\)*/;
     const match = regex.exec(textLine);
     // console.log(match);
 
     if (match) {
-      const line = match[0]
+      const line = match[0];
 
       // if namespace exists
       if (line.includes(".")) {
-        const namespaceRegex = /(\w+)\.(\w+)/
-        const namespaceMatch = namespaceRegex.exec(line)
+        const namespaceRegex = /(\w+)\.(\w+)/;
+        const namespaceMatch = namespaceRegex.exec(line);
         if (namespaceMatch) {
-          const namespaceName = namespaceMatch[1]
-          const functionCallName = namespaceMatch[2]
-          const name = functionCallName.concat(lineNumber.toString())
-          return new CairoFunctionCallNode(name, lineNumber, parents, namespaceName, functionCallName)
+          const namespaceName = namespaceMatch[1];
+          const functionCallName = namespaceMatch[2];
+          const name = functionCallName.concat(lineNumber.toString());
+          return new CairoFunctionCallNode(
+            name,
+            lineNumber,
+            parents,
+            namespaceName,
+            functionCallName
+          );
         }
       }
 
-      const functionNameRegex = /(\w+)\(/
-      const functionNameMatch = functionNameRegex.exec(line)
+      const functionNameRegex = /(\w+)\(/;
+      const functionNameMatch = functionNameRegex.exec(line);
       if (functionNameMatch) {
-        const functionCallName = functionNameMatch[1]
-        const name = functionCallName.concat(lineNumber.toString())
-        return new CairoFunctionCallNode(name, lineNumber, parents, null, functionCallName)
+        const functionCallName = functionNameMatch[1];
+        const name = functionCallName.concat(lineNumber.toString());
+        return new CairoFunctionCallNode(
+          name,
+          lineNumber,
+          parents,
+          null,
+          functionCallName
+        );
       }
     }
 
-      throw new Error(
-        "Cannot create functionCall node, invalid text line on line " + lineNumber
-      );
+    throw new Error(
+      "Cannot create functionCall node, invalid text line on line " + lineNumber
+    );
   }
-
 }
-
