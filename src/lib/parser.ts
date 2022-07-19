@@ -87,45 +87,52 @@ export class CairoParser {
     // placeholder to see if the import node has been added
     let doneTraverseImportName: string[] = [];
 
+    // if importObjects is not undefined, then we need to parse the import
+    if (importObjects) {
     // Loop through the import children that contains map of string, basenode
-    for (const [key, value] of importObjects) {
-      // get value (basenode) and cast it to CairoImportNode
-      const importNode = value as CairoImportNode;
+      for (const [key, value] of importObjects) {
+        // get value (basenode) and cast it to CairoImportNode
+        const importNode = value as CairoImportNode;
 
-      // get the import node name and add to doneTraverseImportName
-      const importName = importNode.name;
+        // get the import node name and add to doneTraverseImportName
+        const importName = importNode.name;
 
-      // check if importName is already in doneTraverseImportName
-      // if yes just skip
-      if (doneTraverseImportName.includes(importName)) {
-        continue;
-      }
-      doneTraverseImportName.push(importName);
-
-      // get `imports` map variable from the node and iterate through it
-      const nodeImports = importNode.imports;
-
-      // loop through the nodeImports
-      for (const [key, value] of nodeImports) {
-        // get the importPath from value map
-        const importPath = value.get("importPath")!;
-
-        // check if the first path is `starkware` (split by .)
-        // if yes, skip. We ignore starkware imports
-
-        const splittedPath = importPath.split(".");
-        if (splittedPath[0] === "starkware") {
+        // check if importName is already in doneTraverseImportName
+        // if yes just skip
+        if (doneTraverseImportName.includes(importName)) {
           continue;
         }
+        doneTraverseImportName.push(importName);
 
-        // check if importPath is in pathAdded
-        if (!pathAdded.includes(importPath)) {
-          // if not, add it to pathAdded
-          pathAdded.push(importPath);
+        // get `imports` map variable from the node and iterate through it
+        const nodeImports = importNode.imports;
+
+        // loop through the nodeImports
+        for (const [key, value] of nodeImports) {
+          // get the importPath from value map
+          const importPath = value.get("importPath")!;
+
+          // check if the first path is `starkware` (split by .)
+          // if yes, skip. We ignore starkware imports
+
+          const splittedPath = importPath.split(".");
+          if (splittedPath[0] === "starkware") {
+            continue;
+          }
+
+          // check if importPath is in pathAdded
+          if (!pathAdded.includes(importPath)) {
+            // if not, add it to pathAdded
+            pathAdded.push(importPath);
+          }
         }
       }
     }
     return pathAdded;
+  }
+
+  public getOtherContract(): CairoContractNode[] {
+    return this._otherContracts;
   }
 
   private recursivePathTilldone(
@@ -186,6 +193,15 @@ export class CairoParser {
     }
   }
 
+  /**
+   * Parse a contract import recursively. It will create contract nodes for each import.
+   * 
+   * 
+   * @param code original file contract content
+   * @param fileName the file name of the contract
+   * @param currentWorkingDir current working directory. Used to find the contract
+   * @param additionalPaths other additional paths to find the imported contract.
+   */
   public parseContractRecursively(
     code: string,
     fileName: string,
