@@ -5,8 +5,7 @@
 import * as assert from "assert";
 import CairoContractNode from "../../lib/nodes/cairoContractNode";
 import CairoImportNode from "../../lib/nodes/importNode";
-import {EntitiesType} from "../../lib/enumCollectionsAndUtils";
-
+import { EntitiesType } from "../../lib/enumCollectionsAndUtils";
 
 suite("Import Node Test Suite", () => {
   /**
@@ -93,7 +92,10 @@ suite("Import Node Test Suite", () => {
     // It will have key of the name of the import (either alias or not)
     // and value of the import that contains dictionary of 'importName' and 'importPath'
     assert.equal(importNodeCast.imports.size, 1, "should have one import");
-    assert.equal(importNodeCast.imports.get("ERC20")!.get("importName"), "ERC20");
+    assert.equal(
+      importNodeCast.imports.get("ERC20")!.get("importName"),
+      "ERC20"
+    );
     assert.equal(
       importNodeCast.imports.get("ERC20")!.get("importPath"),
       "openzeppelin.token.erc20.library"
@@ -106,7 +108,7 @@ suite("Import Node Test Suite", () => {
       0,
       [cairoNode]
     );
-      
+
     // cast to importNode
     const importNodeCast2 = importNode2 as CairoImportNode;
 
@@ -129,23 +131,29 @@ suite("Import Node Test Suite", () => {
 
     // cast to importNode
     const importNodeCast3 = importNode3 as CairoImportNode;
-    
+
     // assert size is three
     assert.equal(importNodeCast3.imports.size, 3, "should have three import");
 
     // Assert if the 'meow', 'mbeow', and 'guk' key is in the map
     assert.equal(importNodeCast3.imports.has("meow"), true, "should have meow");
-    assert.equal(importNodeCast3.imports.has("mbeow"), true, "should have mbeow");
+    assert.equal(
+      importNodeCast3.imports.has("mbeow"),
+      true,
+      "should have mbeow"
+    );
     assert.equal(importNodeCast3.imports.has("guk"), true, "should have guk");
 
     // Assert if the meow importName is 'cat'
     assert.equal(importNodeCast3.imports.get("meow")!.get("importName"), "cat");
 
     // assert the path of 'meow', 'mbeow', and 'guk' is a.b
-    
-    assert.equal(importNodeCast3.imports.get("meow")!.get("importPath"), "a.b");
-    assert.equal(importNodeCast3.imports.get("mbeow")!.get("importPath"), "a.b");
-    assert.equal(importNodeCast3.imports.get("guk")!.get("importPath"), "a.b");
 
+    assert.equal(importNodeCast3.imports.get("meow")!.get("importPath"), "a.b");
+    assert.equal(
+      importNodeCast3.imports.get("mbeow")!.get("importPath"),
+      "a.b"
+    );
+    assert.equal(importNodeCast3.imports.get("guk")!.get("importPath"), "a.b");
   });
 });

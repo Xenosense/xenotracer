@@ -14,7 +14,6 @@ async function main() {
 
     // workspaceFolder to be opened
     const workspaceFolder = path.resolve(__dirname, "../../");
-    console.log(workspaceFolder);
     // Download VS Code, unzip it and run the integration test
     await runTests({
       extensionDevelopmentPath,
