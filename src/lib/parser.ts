@@ -91,14 +91,13 @@ export class CairoParser {
     if (importObjects) {
     // Loop through the import children that contains map of string, basenode
       for (const [key, value] of importObjects) {
-        // get value (basenode) and cast it to CairoImportNode
+
         const importNode = value as CairoImportNode;
 
         // get the import node name and add to doneTraverseImportName
         const importName = importNode.name;
 
-        // check if importName is already in doneTraverseImportName
-        // if yes just skip
+        // check if importName is already in doneTraverseImportName if yes just skip
         if (doneTraverseImportName.includes(importName)) {
           continue;
         }
@@ -107,22 +106,20 @@ export class CairoParser {
         // get `imports` map variable from the node and iterate through it
         const nodeImports = importNode.imports;
 
-        // loop through the nodeImports
         for (const [key, value] of nodeImports) {
           // get the importPath from value map
           const importPath = value.get("importPath")!;
 
-          // check if the first path is `starkware` (split by .)
-          // if yes, skip. We ignore starkware imports
+          // We ignore starkware imports here
 
           const splittedPath = importPath.split(".");
           if (splittedPath[0] === "starkware") {
             continue;
           }
 
-          // check if importPath is in pathAdded
+          // check if importPath is in pathAdded if not, add it to path added
+          // We do this to avoid infinite loop on parsing contract files
           if (!pathAdded.includes(importPath)) {
-            // if not, add it to pathAdded
             pathAdded.push(importPath);
           }
         }
@@ -140,13 +137,14 @@ export class CairoParser {
     currentWorkingDir: string,
     additionalPaths: string[]
   ) {
-    // instantiate our traverser
+
     const cairoFileFinder = new CairoFileFinder(
       currentWorkingDir,
       additionalPaths
     );
 
     const queuePath = pathAdded.slice();
+    
     // placeholder so we can check if the path is already processed
     const pathDone: string[] = [];
 
@@ -155,16 +153,15 @@ export class CairoParser {
       // take the first item of queuePath (QUEUE)
       const path = queuePath.shift()!;
 
-      // check if the path is already in pathDone
+      // check if the path is already in pathDone (avoid infinite loop)
       if (pathDone.includes(path)) {
         continue;
       }
 
-      // get the filepath using cairoFileFinder
+      // get the filepath using cairoFileFinder, return null if the file
+      // doesn't exist
       const filePath = cairoFileFinder.getFilePath(path);
 
-      // if filePath is not null, read and parse it
-      // if null, skip
       if (filePath) {
         // read the file
         const codeContent = readFile(filePath);
@@ -179,8 +176,7 @@ export class CairoParser {
 
         const importPaths = this.helperRecursiveParser(lastContract);
 
-        // then put them into queuePath. check first if they're already
-        // in pathDone
+        // then put them into queuePath. check first if they're already in pathDone
         for (const importPath of importPaths) {
           if (!pathDone.includes(importPath)) {
             queuePath.push(importPath);
@@ -188,7 +184,6 @@ export class CairoParser {
         }
       }
 
-      // add to pathDone
       pathDone.push(path);
     }
   }
@@ -211,8 +206,7 @@ export class CairoParser {
     // First, parse the main file
     this.parseAFile(code, fileName, true);
 
-    // get its import by checking each import node.
-    // get their path
+    // get its import by checking each import node and get their path
     const pathWillTraverse = this.helperRecursiveParser(this._mainContract!);
 
     // do recursive Path till done
@@ -354,7 +348,7 @@ export class CairoParser {
   }
 
   /**
-   * Parse a line
+   * Parse a line on a contract
    *
    * @param line the line that is passed in
    * @param lineNumber the line number the line is in

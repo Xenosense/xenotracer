@@ -39,8 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
         let result = parser.parseContractRecursively(
           text,
           document!.fileName,
-          path.join(cwd, "recursive_test"),
-          [path.join(cwd, "this_cairo")]
+          cwd,
+          [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
         console.log('hehe');
       }
