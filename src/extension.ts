@@ -35,11 +35,13 @@ export function activate(context: vscode.ExtensionContext) {
       // parse the text
       // do it if text is not undefined
       
+
       if (text && cwd) {
         let result = parser.parseContractRecursively(
           text,
           document!.fileName,
           cwd,
+          // FIX THIS LATER
           [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
       }
