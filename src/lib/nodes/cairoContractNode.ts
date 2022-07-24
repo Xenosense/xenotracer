@@ -42,11 +42,11 @@ export default class CairoContractNode extends BaseNode {
   /**
    * Create node for CairoContractNode
    * This static method won't be used! You need to use the main constructor instead
-   * 
+   *
    * @param textLine should be empty string.
-   * @param lineNumber should be 0 
-   * @param parents 
-   * 
+   * @param lineNumber should be 0
+   * @param parents
+   *
    * @returns a new CairoContractNode
    */
   static createNode(
@@ -56,6 +56,4 @@ export default class CairoContractNode extends BaseNode {
   ): BaseNode {
     return new CairoContractNode("", lineNumber, parents);
   }
-
-
 }

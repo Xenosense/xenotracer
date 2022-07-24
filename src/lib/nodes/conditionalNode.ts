@@ -66,11 +66,16 @@ export default class CairoConditionalNode extends BaseNode {
     parents: BaseNode[]
   ): BaseNode {
     if (this.isTextLineThisNode(textLine, parents)) {
-      return new CairoConditionalNode("conditional".concat(lineNumber.toString()), lineNumber, parents);
+      return new CairoConditionalNode(
+        "conditional".concat(lineNumber.toString()),
+        lineNumber,
+        parents
+      );
     }
     // if not match, raise error
     throw new Error(
-      "Cannot create conditional node, invalid text line on line" + lineNumber.toString()
+      "Cannot create conditional node, invalid text line on line" +
+        lineNumber.toString()
     );
   }
 }

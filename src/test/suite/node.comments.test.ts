@@ -68,8 +68,10 @@ suite("Comment Node Test Suite", () => {
 
     const processedComments2 = commentNode.processLine("# namespace cat: ", 1);
 
-
-    const processedComments1 = commentNode.processLine("# func constructor{ ", 2);
+    const processedComments1 = commentNode.processLine(
+      "# func constructor{ ",
+      2
+    );
     const processedComments3 = commentNode.processLine("# awawaawa", 3);
     // We check whether comment is ended
     // Since comments will be thrown away, we just check if the node is ended

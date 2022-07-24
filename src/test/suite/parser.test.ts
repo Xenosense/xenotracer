@@ -73,6 +73,4 @@ suite("Parser Test Suite", () => {
 
     assert(funcName === "increaseAllowance");
   });
-
-
 });
