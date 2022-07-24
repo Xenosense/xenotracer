@@ -42,7 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
           cwd,
           [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
-        console.log('hehe');
       }
     }
   );
