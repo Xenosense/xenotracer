@@ -1,6 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import { CairoParser } from "./lib/parser";
+import path = require("path");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,9 +17,34 @@ export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
     "visual-stark.helloWorld",
     () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from visual-stark!");
+      // initialize the parser
+      let parser = new CairoParser();
+
+      // get the active editor
+      let editor = vscode.window.activeTextEditor;
+
+      // get the active document
+      let document = editor?.document;
+
+      // get its text
+      let text = document?.getText();
+
+      // get the workspace working directory string
+      let cwd = vscode.workspace.workspaceFolders![0].uri.fsPath;
+
+      // parse the text
+      // do it if text is not undefined
+      
+
+      if (text && cwd) {
+        let result = parser.parseContractRecursively(
+          text,
+          document!.fileName,
+          cwd,
+          // FIX THIS LATER
+          [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
+        );
+      }
     }
   );
 
