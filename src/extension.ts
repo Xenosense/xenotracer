@@ -3,6 +3,8 @@
 import * as vscode from "vscode";
 import { CairoParser } from "./lib/parser";
 import path = require("path");
+import { commandWebView } from "./frontendGateway/gateway";
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -44,6 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
           // FIX THIS LATER
           [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
+
+        // show the result in a new panel
+        commandWebView(context);
       }
     }
   );
