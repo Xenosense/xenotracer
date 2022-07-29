@@ -41,7 +41,7 @@ suite("Collect Parsed Result Test Suite", () => {
     // file. Handle the \r\n problem in windows
     const expectedOutput = fs
       .readFileSync(
-        path.join(cwd, "test_utils/graphviz_mock/asserted_test_1.graphviz")
+        path.join(cwd, "test_utils/graphviz_mock/asserted_test_1.dot")
       )
       .toString()
       .replace(/\r\n/g, "\n");
