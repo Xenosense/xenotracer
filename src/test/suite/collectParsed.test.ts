@@ -18,7 +18,7 @@ suite("Collect Parsed Result Test Suite", () => {
     // One of them has depth of one, and the others has two depth
     // Accept if the output is the same as the expected output (Graphviz)
     const cairoParser = new CairoParser();
-    const filePath = "../../test_utils/collect_parsed_test.cairo";
+    const filePath = path.join(cwd, "test_utils/collect_parsed_test.cairo");
 
     // Get the file content using filesystem typecript
     const fileContent = fs.readFileSync(filePath).toString();
