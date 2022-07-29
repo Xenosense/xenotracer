@@ -18,6 +18,7 @@ class FunctionCallTree {
    * @param childs The child tuples of the tree. It contains the function calls that this function call refer to.
    *      For example: in `function Namespace.call()`, it will have all of function calls in `call()` as this child.
    */
+  
   constructor(
     public contractNode: CairoContractNode,
     public functionCallNodeRoot: CairoFunctionCallNode | null,

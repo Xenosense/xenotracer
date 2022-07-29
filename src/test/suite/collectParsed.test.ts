@@ -47,5 +47,6 @@ suite("Collect Parsed Result Test Suite", () => {
       .replace(/\r\n/g, "\n");
 
     assert.equal(result.trim(), expectedOutput.trim());
+    
   });
 });
