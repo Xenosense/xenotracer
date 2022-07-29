@@ -32,13 +32,20 @@ suite("Collect Parsed Result Test Suite", () => {
       cwd,
       [path.join(cwd, "test_utils")]
     );
-    const result = ParsedContractCollector.collectParsedResult(cairoParser);
+    const result = ParsedContractCollector.collectParsedResult(
+      cairoParser.getMainContract()!,
+      cairoParser.getOtherContract()
+    );
 
-    // Get the expected output from the file
-    const acceptedResult = fs
-      .readFileSync("../../test_utils/graphviz_mock/asserted_test_1.cairo")
-      .toString();
+    // Get the expected output from the "../../test_utils/graphviz_mock/asserted_test_1.graphviz"
+    // file. Handle the \r\n problem in windows
+    const expectedOutput = fs
+      .readFileSync(
+        path.join(cwd, "test_utils/graphviz_mock/asserted_test_1.graphviz")
+      )
+      .toString()
+      .replace(/\r\n/g, "\n");
 
-    assert.equal(result, acceptedResult);
+    assert.equal(result.trim(), expectedOutput.trim());
   });
 });

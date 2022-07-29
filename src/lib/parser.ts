@@ -54,6 +54,7 @@ export class CairoParser {
     EntitiesType.scopingWithAttr,
     EntitiesType.conditionalStatement,
     EntitiesType.import,
+    EntitiesType.functionCall,
   ];
 
   // Main File Contract Node. Used for running the parser.
@@ -152,23 +153,23 @@ export class CairoParser {
     // we will loop while queuePath is not empty
     while (queuePath.length > 0) {
       // take the first item of queuePath (QUEUE)
-      const path = queuePath.shift()!;
+      const importDotPath = queuePath.shift()!;
 
       // check if the path is already in pathDone (avoid infinite loop)
-      if (pathDone.includes(path)) {
+      if (pathDone.includes(importDotPath)) {
         continue;
       }
 
       // get the filepath using cairoFileFinder, return null if the file
       // doesn't exist
-      const filePath = cairoFileFinder.getFilePath(path);
+      const filePath = cairoFileFinder.getFilePath(importDotPath);
 
       if (filePath) {
         // read the file
         const codeContent = readFile(filePath);
-
-        // Then parse the file
-        this.parseAFile(codeContent, filePath, false);
+        
+        // The filepath is the import dot path (e.g.: a.b.c)
+        this.parseAFile(codeContent, importDotPath, false);
 
         // get the last _otherContract then get its import path
         // using helperRecursiveParser
@@ -177,7 +178,7 @@ export class CairoParser {
 
         const importPaths = this.helperRecursiveParser(lastContract);
 
-        // then put them into queuePath. check first if they're already in pathDone
+        // then put them into queuePath. check if they're already in pathDone
         for (const importPath of importPaths) {
           if (!pathDone.includes(importPath)) {
             queuePath.push(importPath);
@@ -185,7 +186,7 @@ export class CairoParser {
         }
       }
 
-      pathDone.push(path);
+      pathDone.push(importDotPath);
     }
   }
 
@@ -263,7 +264,7 @@ export class CairoParser {
 
     // Check if the _currentNode is the mainContract, if no, throw error
     if (this._currentNode !== runningContract) {
-      // Improvement, add better error message
+      // TODO: Improvement, add better error message
       throw new Error("Error: Parser: Something wrong with your cairo file!");
     }
 
