@@ -153,23 +153,40 @@ export class CairoParser {
     // we will loop while queuePath is not empty
     while (queuePath.length > 0) {
       // take the first item of queuePath (QUEUE)
+<<<<<<< HEAD
       const importDotPath = queuePath.shift()!;
 
       // check if the path is already in pathDone (avoid infinite loop)
       if (pathDone.includes(importDotPath)) {
+=======
+      const path = queuePath.shift()!;
+
+      // check if the path is already in pathDone (avoid infinite loop)
+      if (pathDone.includes(path)) {
+>>>>>>> main
         continue;
       }
 
       // get the filepath using cairoFileFinder, return null if the file
       // doesn't exist
+<<<<<<< HEAD
       const filePath = cairoFileFinder.getFilePath(importDotPath);
+=======
+      const filePath = cairoFileFinder.getFilePath(path);
+>>>>>>> main
 
       if (filePath) {
         // read the file
         const codeContent = readFile(filePath);
+<<<<<<< HEAD
         
         // The filepath is the import dot path (e.g.: a.b.c)
         this.parseAFile(codeContent, importDotPath, false);
+=======
+
+        // Then parse the file
+        this.parseAFile(codeContent, filePath, false);
+>>>>>>> main
 
         // get the last _otherContract then get its import path
         // using helperRecursiveParser
@@ -178,7 +195,11 @@ export class CairoParser {
 
         const importPaths = this.helperRecursiveParser(lastContract);
 
+<<<<<<< HEAD
         // then put them into queuePath. check if they're already in pathDone
+=======
+        // then put them into queuePath. check first if they're already in pathDone
+>>>>>>> main
         for (const importPath of importPaths) {
           if (!pathDone.includes(importPath)) {
             queuePath.push(importPath);
@@ -186,7 +207,11 @@ export class CairoParser {
         }
       }
 
+<<<<<<< HEAD
       pathDone.push(importDotPath);
+=======
+      pathDone.push(path);
+>>>>>>> main
     }
   }
 
@@ -264,7 +289,11 @@ export class CairoParser {
 
     // Check if the _currentNode is the mainContract, if no, throw error
     if (this._currentNode !== runningContract) {
+<<<<<<< HEAD
       // TODO: Improvement, add better error message
+=======
+      // Improvement, add better error message
+>>>>>>> main
       throw new Error("Error: Parser: Something wrong with your cairo file!");
     }
 
