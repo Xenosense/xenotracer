@@ -16,3 +16,4 @@ namespace TestNamespace:
         Interros.total_supply()
         return ()
     end
+end
