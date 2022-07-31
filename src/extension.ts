@@ -1,8 +1,7 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { CairoParser } from "./lib/parser";
 import path = require("path");
+import { ParsedContractCollector } from "./lib/collector";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -34,17 +33,24 @@ export function activate(context: vscode.ExtensionContext) {
 
       // parse the text
       // do it if text is not undefined
-      
 
       if (text && cwd) {
-        let result = parser.parseContractRecursively(
+        parser.parseContractRecursively(
           text,
           document!.fileName,
           cwd,
-          // FIX THIS LATER
+          // TODO: FIX CWD LATER
           [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
-      }
+        
+        const result = ParsedContractCollector.collectParsedResult(
+          parser.getMainContract()!,
+          parser.getOtherContract()
+        );
+
+        console.log("RESULT: " + result);
+        // TODO: pass to frontend
+      } 
     }
   );
 
