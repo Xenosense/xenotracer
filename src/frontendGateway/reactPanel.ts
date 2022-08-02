@@ -8,7 +8,7 @@ export class ReactPanel {
   /**
    * Track the currently panel. Only allow a single panel to exist at a time.
    */
-  public static currentPanel: ReactPanel | undefined;
+  public static currentPanel: ReactPanel | null;
 
   private static readonly viewType = "react";
 
@@ -88,7 +88,7 @@ export class ReactPanel {
   }
 
   public dispose() {
-    ReactPanel.currentPanel = undefined;
+    ReactPanel.currentPanel = null;
 
     // Clean up our resources
     this._panel.dispose();
