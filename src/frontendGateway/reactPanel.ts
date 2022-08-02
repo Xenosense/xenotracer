@@ -17,10 +17,10 @@ export class ReactPanel {
   private _disposables: vscode.Disposable[] = [];
 
   /**
-   * Create or show the webview panel linking it to React HTML. 
+   * Create or show the webview panel linking it to React HTML.
    * The panel will be created beside the current contract window.
    * This function also handle dispose of the panel when the contract window is closed.
-   * 
+   *
    * @param extensionPath Extension path to load webview from
    * @param renderedCode Rendered parsed code
    */
@@ -121,31 +121,35 @@ export class ReactPanel {
 
     // Use a nonce to whitelist which scripts can be run
     const nonce = getNonce();
-    const codeRendered: string = renderedCode;
 
+    // let renderedCode2 = undefined;
     return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 				<meta name="theme-color" content="#000000">
-                <meta property="code-rendered" content="${codeRendered}">
 				<title>React App</title>
 				<link rel="stylesheet" type="text/css" href="${styleUri}">
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}';style-src vscode-resource: 'unsafe-inline' http: https: data:;">
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}';style-src vscode-resource: http: https: data:;">
 				<base href="${vscode.Uri.file(path.join(this._extensionPath, "fe_build")).with({
           scheme: "vscode-resource",
         })}/">
+        
 			</head>
 			<body>
+      <script nonce="${nonce}"> 
+        window.renderedCode = \`${renderedCode}\`;
+      </script>
 				<noscript>You need to enable JavaScript to run this app.</noscript>
-				<div id="root"></div>
-				
-				<script nonce="${nonce}" src="${scriptUri}"></script>
+				<div id="root"></div>        
+      <script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
   }
 }
+//
+//
 
 function getNonce() {
   let text = "";

@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         console.log("RESULT: " + result);
 
-        commandWebView(context);
+        commandWebView(context, result);
       }
       
     }
