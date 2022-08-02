@@ -8,25 +8,60 @@ import CairoFunctionCallNode from "./nodes/functionCallNode";
 import CairoFunctionNode from "./nodes/functionNode";
 import CairoImportNode from "./nodes/importNode";
 
+/**
+ * Arrow creator to connect each node in a subgraph
+ * We separate arrow that has child
+ * example:
+ * a function got invocation: a() -> b() -> c(), the arrow collected will have
+ * [a, c] as the content.
+ * so we do this:
+ * BEFORE_INVOCATION -> a
+ * c -> NEXT_INVOCATION
+ * create the arrow from returnedVarName
+ * 
+ * @param graphvizString 
+ * @param returnedVarName 
+ * @returns 
+ */
+function connectArrow(graphvizString: string, returnedVarName: string[][]) {
+  
+  for (let i = 0; i < returnedVarName.length; i++) {
+    const arrowVars = returnedVarName[i];
+    if (arrowVars.length === 1) {
+      graphvizString += arrowVars[0];
+    } else {
+      // do separate arrow.
+      graphvizString += arrowVars[0] + "\n";
+      graphvizString += arrowVars[1];
+    }
+    // dont put '->' if not the last arrow
+    if (i !== returnedVarName.length - 1) {
+      graphvizString += " -> ";
+    }
+  }
+  graphvizString += "\n";
+
+  return graphvizString;
+}
 
 class FunctionCallTree {
   /**
    * Function Call Tree that represents the function call tree of a contract.
-   * 
+   *
    * @param contractNode The contract node that the function call tree is created from.
    * @param functionCallNodeRoot The function call node that is the root of the tree.
    * @param childs The child tuples of the tree. It contains the function calls that this function call refer to.
    *      For example: in `function Namespace.call()`, it will have all of function calls in `call()` as this child.
    */
-  
+
   constructor(
     public contractNode: CairoContractNode,
     public functionCallNodeRoot: CairoFunctionCallNode | null,
     public childs: FunctionCallTree[] = []
   ) {
-    // TODO: tree structure of this one is redundant with parsed tree. 
-  // This is inefficient (twice on traversing the import).
-  // This process should be done in the parser.
+    // TODO: tree structure of this one is redundant with parsed tree.
+    // This is inefficient (twice on traversing the import).
+    // This process should be done in the parser.
     this.contractNode = contractNode;
     this.functionCallNodeRoot = functionCallNodeRoot;
     this.childs = childs;
@@ -52,11 +87,11 @@ class FunctionCallTree {
     let varName = this.functionCallNodeRoot!.functionCallName;
     // check if the variable name is used. if exists, change to varName + '_'
     // e.g: name = 'a_____'
-    if (usedVars.has(varName)) {
+    while (usedVars.has(varName)) {
       varName = varName + "_";
     }
 
-    usedVars.add(`${varName}`);
+    usedVars.add(varName);
 
     // Base case: no child present
     if (this.childs.length === 0) {
@@ -74,16 +109,19 @@ class FunctionCallTree {
       } {\n`;
       graphvizString += `label="${label}()"\n`;
 
+      const arrowVars: string[][] = [];
       this.childs.forEach((child) => {
         const tupleReturnedGraphviz = child.getGraphvizString(usedVars);
         // add the returned variable to the list.
         returnedVarName.push(...tupleReturnedGraphviz[0]);
+        arrowVars.push(tupleReturnedGraphviz[0]);
         // add the graphviz string to the main graphviz string.
         graphvizString += tupleReturnedGraphviz[1];
       });
 
-      // create the arrow from returnedVarName
-      graphvizString += returnedVarName.join(" -> ") + "\n";
+      // create the arrow from returnedVarName.
+      graphvizString = connectArrow(graphvizString, arrowVars);
+      // graphvizString += returnedVarName.join(" -> ")
       graphvizString += "}\n";
 
       // Return the tuple of used variables and graphviz string.
@@ -198,7 +236,7 @@ class FunctionCallTree {
 
   /**
    * Form child nodes of this node until leaf or no child can be formed recursively.
-   * 
+   *
    * @param otherContracts imported contracts from the main contract and its depedency.
    */
   public formChildTillLeaf(otherContracts: CairoContractNode[]) {
@@ -242,7 +280,7 @@ class FunctionCallTree {
 
   /**
    * Create function call trees of all functions in a contract.
-   * 
+   *
    * @param contractNode the contract node that contains the function call.
    * @param otherContracts the imported contracts results from the parsed main contract.
    * @param functionNode function node that want to be explored
@@ -283,10 +321,9 @@ class FunctionCallTree {
 }
 
 export class ParsedContractCollector {
-
   /**
    *  Create graphviz representation of the contract functions.
-   * 
+   *
    * @param functionsWithTree
    *   Tuple of function with its function call tree.
    *   e.g.: constructor -> _mint, _go, _lend
@@ -308,11 +345,11 @@ rankdir=LR;
     // Loop through all the functions with their trees.
     for (let [functionNode, trees] of functionsWithTree) {
       const functionName = functionNode.name;
-
+      graphvizPlaceholder += "subgraph cluster_main_" + functionName + " {\n";
+      graphvizPlaceholder += `label="${functionName}";\n`;
+      const arrowCollected = [];
       // Loop through all the trees.
       for (let tree of trees) {
-        graphvizPlaceholder += "subgraph cluster_main_" + functionName + " {\n";
-        graphvizPlaceholder += `label="${functionName}";\n`;
         const nodeGraphviz = tree.getGraphvizString(graphvizVarNames);
         const arrowVars = nodeGraphviz[0];
         const grapvizString = nodeGraphviz[1];
@@ -320,12 +357,15 @@ rankdir=LR;
 
         // arrow vars is a list of all node in the graph that will be connected
         // with arrow in graphviz
-        // Loop through all the arrow variables and add them to the graphvizPlaceholder.
-        graphvizPlaceholder += arrowVars.join(" -> ");
-        graphvizPlaceholder += "}\n";
+        // push arrow variables to arrowCollected
+        arrowCollected.push(arrowVars);
       }
-    }
 
+      // loop arrow collected and create arrow between them.
+      graphvizPlaceholder = connectArrow(graphvizPlaceholder, arrowCollected);
+
+      graphvizPlaceholder += "}\n";
+    }
     graphvizPlaceholder += "}\n";
     return graphvizPlaceholder;
   }
@@ -348,7 +388,6 @@ rankdir=LR;
     mainContract: CairoContractNode,
     importedContracts: CairoContractNode[]
   ): string {
-
     const functions = mainContract.children.get(EntitiesType.function);
 
     // Build the trees for each function. Parser didn't do this one. In the future, we will do this
