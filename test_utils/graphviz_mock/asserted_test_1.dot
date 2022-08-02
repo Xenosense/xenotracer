@@ -1,0 +1,19 @@
+digraph G {
+compound=true;
+rankdir=LR;
+
+    subgraph cluster_main_constructor {
+label="constructor";
+n_total_supply [label="Interros.total_supply()"]
+
+n_total_supply}
+subgraph cluster_main_function_test_2_levels {
+label="function_test_2_levels";
+subgraph cluster_call_interros {
+label="TestNamespace.call_interros()"
+n_total_supply_ [label="Interros.total_supply()"]
+n_total_supply_
+}
+
+n_total_supply_}
+}

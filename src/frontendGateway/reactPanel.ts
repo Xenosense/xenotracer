@@ -16,7 +16,15 @@ export class ReactPanel {
   private readonly _extensionPath: string;
   private _disposables: vscode.Disposable[] = [];
 
-  public static createOrShow(extensionPath: string) {
+  /**
+   * Create or show the webview panel linking it to React HTML. 
+   * The panel will be created beside the current contract window.
+   * This function also handle dispose of the panel when the contract window is closed.
+   * 
+   * @param extensionPath Extension path to load webview from
+   * @param renderedCode Rendered parsed code
+   */
+  public static createOrShow(extensionPath: string, renderedCode: string) {
     const column = vscode.window.activeTextEditor
       ? vscode.window.activeTextEditor.viewColumn
       : undefined;
@@ -28,12 +36,17 @@ export class ReactPanel {
     } else {
       ReactPanel.currentPanel = new ReactPanel(
         extensionPath,
-        vscode.ViewColumn.Beside
+        vscode.ViewColumn.Beside,
+        renderedCode
       );
     }
   }
 
-  private constructor(extensionPath: string, column: vscode.ViewColumn) {
+  private constructor(
+    extensionPath: string,
+    column: vscode.ViewColumn,
+    renderedCode: string
+  ) {
     this._extensionPath = extensionPath;
 
     // Create and show a new webview panel
@@ -45,7 +58,8 @@ export class ReactPanel {
         // Enable javascript in the webview
         enableScripts: true,
 
-        // And restric the webview to only loading content from our extension's `media` directory.
+        // Restrict the webview to only loading content from our extension's `media` directory.
+        // TODO: add settings that contains resources
         localResourceRoots: [
           vscode.Uri.file(path.join(this._extensionPath, "fe_build")),
         ],
@@ -53,7 +67,7 @@ export class ReactPanel {
     );
 
     // Set the webview's initial html content
-    this._panel.webview.html = this._getHtmlForWebview();
+    this._panel.webview.html = this._getHtmlForWebview(renderedCode);
 
     // Listen for when the panel is disposed
     // This happens when the user closes the panel or when the panel is closed programatically
@@ -87,7 +101,7 @@ export class ReactPanel {
     }
   }
 
-  private _getHtmlForWebview() {
+  private _getHtmlForWebview(renderedCode: string) {
     const manifest = require(path.join(
       this._extensionPath,
       "fe_build",
@@ -107,14 +121,7 @@ export class ReactPanel {
 
     // Use a nonce to whitelist which scripts can be run
     const nonce = getNonce();
-    const codeRendered: string = `graph {
-        a -- b;
-        b -- c;
-        a -- c;
-        d -- c;
-        e -- c;
-        e -- a;
-    }`;
+    const codeRendered: string = renderedCode;
 
     return `<!DOCTYPE html>
 			<html lang="en">
