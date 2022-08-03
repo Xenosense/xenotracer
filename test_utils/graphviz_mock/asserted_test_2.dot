@@ -1,0 +1,49 @@
+digraph G {
+compound=true;
+rankdir=LR;
+
+    subgraph cluster_main_constructor {
+label="constructor";
+subgraph cluster_total_supply {
+label="Interros2.total_supply()"
+n_hello_world [label="hello_world()"]
+n_b [label="A.b()"]
+n_xxx [label="c.xxx()"]
+n_hello_world -> n_b -> n_xxx
+}
+
+subgraph cluster_call_interros {
+label="TestNamespace.call_interros()"
+n_total_supply_ [label="Interros.total_supply()"]
+n_total_supply_
+}
+
+n_yyy [label="xxx.yyy()"]
+
+n_hello_world
+n_xxx -> n_total_supply_ -> n_yyy
+}
+subgraph cluster_main_function_test_2_levels {
+label="function_test_2_levels";
+subgraph cluster_call_interros {
+label="TestNamespace.call_interros()"
+n_total_supply__ [label="Interros.total_supply()"]
+n_total_supply__
+}
+
+subgraph cluster_total_supply {
+label="Interros2.total_supply()"
+n_hello_world_ [label="hello_world()"]
+n_b_ [label="A.b()"]
+n_xxx_ [label="c.xxx()"]
+n_hello_world_ -> n_b_ -> n_xxx_
+}
+
+n_total_supply____ [label="Interros.total_supply()"]
+
+n_ddd [label="ccc.ddd()"]
+
+n_total_supply__ -> n_hello_world_
+n_xxx_ -> n_total_supply____ -> n_ddd
+}
+}
