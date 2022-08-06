@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { CairoParser } from "./lib/parser";
 import path = require("path");
+import { commandWebView } from "./frontendGateway/gateway";
 import { ParsedContractCollector } from "./lib/collector";
 
 // this method is called when your extension is activated
@@ -42,15 +43,19 @@ export function activate(context: vscode.ExtensionContext) {
           // TODO: FIX CWD LATER
           [path.join(cwd, "this_cairo"), path.join(cwd, "recursive_test")]
         );
-        
+
+        // show the result in a new panel
+
         const result = ParsedContractCollector.collectParsedResult(
           parser.getMainContract()!,
           parser.getOtherContract()
         );
 
         console.log("RESULT: " + result);
-        // TODO: pass to frontend
-      } 
+
+        commandWebView(context, result);
+      }
+      
     }
   );
 
