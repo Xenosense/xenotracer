@@ -55,7 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
 
         commandWebView(context, result);
       }
-      
     }
   );
 
