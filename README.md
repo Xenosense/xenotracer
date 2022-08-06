@@ -33,7 +33,11 @@ For now, you can follow these steps instead to install it locally:
 
 **Note**: We haven't released our first version, expect many bugs to happen!
 
+## How to use
 
+Simply open Command Pallete (`CMD / CTRL + SHIFT + P`) and select `> Xenotracer: Visualize Contract Flow` when your contract file is open. It will create a window to visualize your contract flow.
+
+![img_vsc](imgs/vscode_use.png)
 
 ## <a name="developer_area"></a> Developer Area
 
