@@ -1,11 +1,12 @@
 {
-  "name": "xeno-tracer",
+  "name": "xenotracer",
   "displayName": "Xenotracer",
   "description": "Trace and Visualize your Cairo contract file by using this extension!",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.68.0"
   },
+  "repository": "https://github.com/Xenosense/xeno-tracer/",
   "categories": [
     "Other"
   ],

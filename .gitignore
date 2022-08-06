@@ -29,8 +29,8 @@ bower_components
 # Editors
 .idea
 *.iml
-.vscode
 
+*.vsix
 # OS metadata
 .DS_Store
 Thumbs.db
