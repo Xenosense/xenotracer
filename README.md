@@ -62,20 +62,6 @@ Use F5 in your Visual Studio Code, then use the "Run Extension" option to try th
 
 To be announced in CONTRIBUTING.md
 
-### Commiting
-
-We use [commitizen](https://github.com/commitizen/cz-cli) to commit to make the commit message clean. 
-
-Initialize the commitizen (if you haven't) by using this command.
-
-```
-commitizen init cz-conventional-changelog --yarn --dev --exact
-```
-
-If you get error that it's already setup in your place, ignore it.
-
-To commit, use `cz` and write accordingly.
-
 ## Several Other Usages
 
 - Unit test test: Do `yarn test`  
