@@ -23,5 +23,5 @@ about: Use this to report bugs that you found.
 
   - Hash / Version: <!--- Provide the current version of main branch (either hash or version number) -->
   - OS: <!--- What OS did you use to produce this bug? -->
-
+  - Node JS Version: <!-- what node js version do you use? -->
 <!--- Optional: Other information that you find important for us to know -->
